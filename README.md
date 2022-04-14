@@ -4,6 +4,20 @@
 
 项目地址：https://gitee.com/feng-chengxiang/shopping-mall-vue.git
 
+# 方案：
+
+## 1.路由
+
+ReactRouter6，相比较5，多了很多钩子
+
+## 2.状态管理
+
+我这个项目需要共享的状态不多也不少，可以使用状态管理工具。我选择的是React-Redux，但还是采用connect方案。
+
+也就是容器组件连接UI组件和redux的方案。最新的话redux提供了两个新钩子useSelector和useDispatch，不用connect也
+
+可以实现，有机会会实验一下。
+
 # Vue2和React二者区别：
 
 ## 1.配置文件
@@ -24,9 +38,13 @@ https://blog.csdn.net/weixin_42681295/article/details/108670040
 
 [在react中使用css module - 秦伟杰 - 博客园 (cnblogs.com)](https://www.cnblogs.com/qinweijie/p/15012354.html)
 
-有一个问题：
+### 有一个问题：
 
 ![image-20220413225721597](https://picture-feng.oss-cn-chengdu.aliyuncs.com/img/image-20220413225721597.png)
+
+### 解决方案：
+
+reset.css里面就只有清除浮动这一个是自定义的属性，直接写在style里面就行。但我觉得一定有更好的解决方案，不然一旦需要清除浮动就需要手动添加clearFix到对应的xxx.module.css里面，那这样在public里面全局引入的reset.css还有什么意义呢？
 
 ## 3.标签
 
@@ -71,3 +89,93 @@ https://blog.csdn.net/weixin_42681295/article/details/108670040
 ### 配置代理
 
 [(26条消息) React 代理 setupProxy 无法启动项目_YoungJayDo257248的博客-CSDN博客](https://blog.csdn.net/qq_44134222/article/details/122814143)
+
+## 2.关于CSS作用域污染
+
+这一部分我在Vue2区别和React二者区别那里，已经解决了。不过没找到更好的方法。
+
+## 3.路由元信息
+
+原项目中依赖路由元信息，选择是否展示Footer组件。我看了下，只有两个组件：登录组件和注册组件不用展示，
+
+那么直接判断pathname就行了。这显然不是最优解，很想知道react怎么自定义路由配置项。
+
+![image-20220414140824676](https://picture-feng.oss-cn-chengdu.aliyuncs.com/img/image-20220414140824676.png)
+
+# 第二天
+
+## 1.Swiper:
+
+Swiper在React中的使用，要变下使用方式
+
+官网：[Swiper React Components (swiperjs.com)](https://swiperjs.com/react)
+
+这个怎么说官方也提供了相关钩子，很方便就可以实现轮播图。以后使用的时候去查查参数就行
+
+```jsx
+
+import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
+
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/scrollbar';
+
+const Carousel = () => {
+  return (
+    <Swiper
+      modules={[Navigation, Pagination, Scrollbar, A11y]}
+    //   spaceBetween={50}
+      slidesPerView={1}
+      navigation
+      pagination={{ clickable: true }}
+      scrollbar={{ draggable: true }}
+    >
+      <SwiperSlide><img src={require('./images/banner1.jpg')} alt="" /></SwiperSlide>
+      <SwiperSlide><img src={require('./images/banner2.jpg')} alt="" /></SwiperSlide>
+      <SwiperSlide><img src={require('./images/banner3.jpg')} alt="" /></SwiperSlide>
+      <SwiperSlide><img src={require('./images/banner4.jpg')} alt="" /></SwiperSlide>
+      
+      ...
+    </Swiper>
+  );
+};
+export default Carousel
+```
+
+## 2.useEffect
+
+组件挂载时会发送请求，怎么做到只发送一次请求，切换路由组件又回来后，不再发送请求？
+
+```jsx
+const [CategoryList,SetCategoryList] = useState([])
+    useEffect(()=>{
+       const doAsync = async()=>{
+            let result = await reqCategoryList()
+            if(result.code==200){
+                // console.log("hahahhaha")
+                SetCategoryList(result.data)
+            }
+       }
+       doAsync().catch((error)=>console.log(error.msg))
+    },[])
+    // console.log(CategoryList,'List')
+```
+
+## 3.dataset
+
+这个是H5让我们获取自定义属性的，我们在三级联动那里需要用到，原笔记说的很清楚。
+
+而且只有我们没有点击空白区域，才能正确获得自定义属性。
+
+```jsx
+function goSearch(event) {
+        event.preventDefault()
+        let element =event.target
+        let { categoryname, categoryid_1, categoryid_2, categoryid_3 } =element.dataset;
+        console.log(categoryname,categoryid_1,categoryid_2,categoryid_3)
+    }
+```
+
+<img src="https://picture-feng.oss-cn-chengdu.aliyuncs.com/img/124.gif" style="zoom: 100%"></img>

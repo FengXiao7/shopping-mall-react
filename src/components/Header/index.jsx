@@ -2,7 +2,7 @@
 import classnames from 'classnames'
 import React from 'react';
 import style from './index.module.css'
-import { Link, Outlet } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 const Header = () => {
     return (
@@ -16,7 +16,7 @@ const Header = () => {
                             <p>
                                 <span>请</span>
                                 <Link to="/login">登录</Link>
-                                <a href="###" className={style.register}>免费注册</a>
+                                <Link to="/register" className={style.register}>免费注册</Link>
                             </p>
                         </div>
                         <div className={style.typeList}>

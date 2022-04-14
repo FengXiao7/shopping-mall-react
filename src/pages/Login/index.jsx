@@ -1,9 +1,8 @@
-// 请确认安装了classnames
 import classnames from 'classnames'
 import React from 'react';
 import style from './index.module.css'
+import { Link } from 'react-router-dom';
 const Login = () => {
-    console.log(style)
     return (
         <>
             {/* <!-- 登录 --> */}
@@ -50,7 +49,7 @@ const Login = () => {
                                     <li><img src={require("./images/ali.png")} alt="" /></li>
                                     <li><img src={require("./images/weixin.png")} alt="" /></li>
                                 </ul>
-                                <a href="##" className={style.register}>立即注册</a>
+                                <Link to="/register" className={style.register}>免费注册</Link>
                             </div>
                         </div>
                     </div>

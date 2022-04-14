@@ -142,3 +142,8 @@
   padding: 0 20px;
   margin: 15px 0;
 }
+.clearFix::after {
+  content: "";
+  display: block;
+  clear: both;
+}

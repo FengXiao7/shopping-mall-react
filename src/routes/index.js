@@ -1,8 +1,10 @@
-import Home from '@pages/Home'
-import Login from '@pages/Login'
+import Home from '@pag/Home'
+import Login from '@pag/Login'
+import Register from '@pag/Register'
+import Search from '@pag/Search'
 import {Navigate} from 'react-router-dom'
 
-export default [
+const routes = [
     {
         path:'/home',
         element:<Home/>
@@ -12,8 +14,16 @@ export default [
         element:<Login/>
     },
     {
+        path:'/register',
+        element:<Register/>
+    },
+    {
+        path:'/search',
+        element:<Search/>
+    },
+    {
 		path:'/',
 		element:<Navigate to="/home"/>
 	}
 ]
-
+export default routes

@@ -1,4 +1,4 @@
-const {override,addDecoratorsLegacy,addWebpackAlias} = require('customize-cra');
+const {override,addDecoratorsLegacy,addWebpackAlias,disableEsLint} = require('customize-cra');
 const path = require('path')
 module.exports = override(
   addDecoratorsLegacy(), // 装饰器支持
@@ -12,7 +12,7 @@ module.exports = override(
   addWebpackAlias({
     "@": path.join(__dirname, 'src'),
     "@com": path.join(__dirname, 'src/components'),
-    "@pages": path.join(__dirname, 'src/pages')
+    "@pag": path.join(__dirname, 'src/pages'),
    }),
-
+   disableEsLint()
  )
