@@ -1,70 +1,73 @@
-# Getting Started with Create React App
+# 说明：
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+这个项目是用react全家桶重构之前用vue2写的购物网站
 
-## Available Scripts
+项目地址：https://gitee.com/feng-chengxiang/shopping-mall-vue.git
 
-In the project directory, you can run:
+# Vue2和React二者区别：
 
-### `npm start`
+## 1.配置文件
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+[(26条消息) React 代理 setupProxy 无法启动项目_YoungJayDo257248的博客-CSDN博客](https://blog.csdn.net/qq_44134222/article/details/122814143)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+https://blog.csdn.net/weixin_42681295/article/details/108670040
 
-### `npm test`
+## 2.引入样式
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+为防止css作用域污染，React要麻烦一些。我使用的方案是index.module.css的方式引入。使用classNames和一个插件快速替换
 
-### `npm run build`
+传送门：
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+[如何在React中优雅的写CSS - 掘金 (juejin.cn)](https://juejin.cn/post/6844904021304541198)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+[(26条消息) className多种样式的三种写法_重阳微噪的博客-CSDN博客_classname 写多个](https://blog.csdn.net/weixin_44160385/article/details/106231519)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+[在react中使用css module - 秦伟杰 - 博客园 (cnblogs.com)](https://www.cnblogs.com/qinweijie/p/15012354.html)
 
-### `npm run eject`
+有一个问题：
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+![image-20220413225721597](https://picture-feng.oss-cn-chengdu.aliyuncs.com/img/image-20220413225721597.png)
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 3.标签
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### img：
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+img必须闭合引入src有要求
 
-## Learn More
+[(26条消息) react中如何引入图片 - CSDN](https://www.csdn.net/tags/MtjaMgysMTYxOC1ibG9n.html)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### input：
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+闭合
 
-### Code Splitting
+### checked：
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+这个属性要写成defaultChecked
 
-### Analyzing the Bundle Size
+## 4.路由
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+我使用的是Router6，确实比较新。
 
-### Making a Progressive Web App
+# 第一天：
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## 1.配置文件修改
 
-### Advanced Configuration
+这个地方有两种方案：
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+方案1.npm run eject
 
-### Deployment
+单向操作不可逆，npm run eject命令暴露项目的配置，这样用户就可以完全取得 webpack 文件的控制权我不是很推荐这种做法
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+方案2.react-app-rewired
 
-### `npm run build` fails to minify
+通过创建一个 `config-overrides.js` 文件来对 webpack 配置进行扩展。推荐。
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### 路径取别名
+
+我用的高版本的中间件要换种写法
+
+https://blog.csdn.net/weixin_42681295/article/details/108670040
+
+### 配置代理
+
+[(26条消息) React 代理 setupProxy 无法启动项目_YoungJayDo257248的博客-CSDN博客](https://blog.csdn.net/qq_44134222/article/details/122814143)
