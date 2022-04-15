@@ -4,6 +4,29 @@
 
 项目地址：https://gitee.com/feng-chengxiang/shopping-mall-vue.git
 
+# 急需优化的地方：
+
+## 1.useEffect发送请求
+
+组件挂载时会发送请求，怎么做到只发送一次请求，切换路由组件又回来后，不再发送请求？
+
+```jsx
+const [CategoryList,SetCategoryList] = useState([])
+    useEffect(()=>{
+       const doAsync = async()=>{
+            let result = await reqCategoryList()
+            if(result.code==200){
+                // console.log("hahahhaha")
+                SetCategoryList(result.data)
+            }
+       }
+       doAsync().catch((error)=>console.log(error.msg))
+    },[])
+    // console.log(CategoryList,'List')
+```
+
+
+
 # 方案：
 
 ## 1.路由
@@ -179,3 +202,47 @@ function goSearch(event) {
 ```
 
 <img src="https://picture-feng.oss-cn-chengdu.aliyuncs.com/img/124.gif" style="zoom: 100%"></img>
+
+# 第三天
+
+## 1.动画
+
+react里面使用animate.css的方案不太一样，有点麻烦。这种锦上添花，影响用户体验的部分，我放到后面来做。
+
+## 2.params参数可传可不传
+
+这个在reactRouter里面该怎么设置呀，以前是在占位后面加一个‘？’。但我试了下，不行呀。
+
+TypeNav的search参数和搜索框里面的params参数需要合并，传递给search路由组件。当然可能出现用户不搜索直接选择
+
+TypeNav的可能，这个时候我们的params参数为空。但路由注册时已经占位，不能为空。
+
+那么，我想到了3种方案：
+
+### 方案一：
+
+判断一下用户是否为直接点击TypeNav过来的，这种情况我们手动添加一个params参数占位就行。可以用分类名占位，语义化一些
+
+### 方案二：
+
+放弃params参数，改用state参数。因为最终我们的目的还是是发送请求，只要能获取到参数就行，useNavigate对
+
+state参数支持还更友好。
+
+### 方案三：
+
+再加一个没有params参数占位的路由，不知道这样标不标准，但确实可以正常运行哈
+
+![image-20220415193813176](https://picture-feng.oss-cn-chengdu.aliyuncs.com/img/image-20220415193813176.png)
+
+我最后用的是方案三。
+
+## 3.关于Search参数
+
+我发现在react-router里面获取search参数真的很麻烦额，以前要解析字符串。虽然现在多了个useSearchParams钩子，
+
+但是取得时候必须晓得键才可以，因为有3种不同商品ID作为search参数，我需要不断判断一下，很麻烦。
+
+## 4.useState异步更新问题
+
+尚未解决

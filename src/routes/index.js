@@ -18,6 +18,10 @@ const routes = [
         element:<Register/>
     },
     {
+        path:'/search/:keyword',
+        element:<Search/>
+    },
+    {
         path:'/search',
         element:<Search/>
     },

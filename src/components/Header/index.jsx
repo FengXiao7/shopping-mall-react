@@ -1,10 +1,30 @@
-// 请确认安装了classnames
 import classnames from 'classnames'
-import React from 'react';
+import React, { createRef } from 'react';
 import style from './index.module.css'
-import { Link } from 'react-router-dom'
+import { Link,useNavigate,useSearchParams} from 'react-router-dom'
 
 const Header = () => {
+    const myRef = createRef()
+    const navigate = useNavigate();
+    const [searchParams] = useSearchParams()
+    //整理并发送参数至search组件
+    const goSearch = ()=>{
+        let keyword=myRef.current.value
+        let url=`search/${keyword}`
+        if(searchParams.get('categoryname')){
+            url+=`?categoryname=${searchParams.get('categoryname')}`
+            if(searchParams.get('categoryId1')){
+                url+=`&category1Id=${searchParams.get('category1Id')}`
+            }else if(searchParams.get('categoryid_2')){
+                url+=`&category2Id=${searchParams.get('category2Id')}`
+            }else{
+                url+=`&category3Id=${searchParams.get('category3Id')}`
+            }
+        }
+        // console.log(url,'header')
+        navigate(url)
+    }
+
     return (
         <div>
             <header className={style.header}>
@@ -40,8 +60,18 @@ const Header = () => {
                     </h1>
                     <div className={style.searchArea}>
                         <form action="###" className={style.searchForm}>
-                            <input type="text" id="autocomplete" className={classnames(style['input-error'], style['input-xxlarge'])} />
-                            <button className={classnames(style['sui-btn'], style['btn-xlarge'], style['btn-danger'])} type="button">搜索</button>
+                            <input
+                                type="text"
+                                id="autocomplete"
+                                className={classnames(style['input-error'], style['input-xxlarge'])}
+                                ref={myRef}
+                            />
+                            <button
+                                className={classnames(style['sui-btn'], style['btn-xlarge'], style['btn-danger'])}
+                                type="button"
+                                onClick={goSearch}>
+                                搜索
+                            </button>
                         </form>
                     </div>
                 </div>
