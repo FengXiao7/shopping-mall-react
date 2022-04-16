@@ -10,12 +10,15 @@ const Header = () => {
     //整理并发送参数至search组件
     const goSearch = ()=>{
         let keyword=myRef.current.value
+        if(!keyword){
+            return
+        }
         let url=`search/${keyword}`
         if(searchParams.get('categoryname')){
             url+=`?categoryname=${searchParams.get('categoryname')}`
-            if(searchParams.get('categoryId1')){
+            if(searchParams.get('category1Id')){
                 url+=`&category1Id=${searchParams.get('category1Id')}`
-            }else if(searchParams.get('categoryid_2')){
+            }else if(searchParams.get('category2Id')){
                 url+=`&category2Id=${searchParams.get('category2Id')}`
             }else{
                 url+=`&category3Id=${searchParams.get('category3Id')}`

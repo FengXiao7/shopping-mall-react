@@ -4,7 +4,43 @@
 
 项目地址：https://gitee.com/feng-chengxiang/shopping-mall-vue.git
 
-# 急需优化的地方：
+我在这里不会记录一些重复的笔记，因为之前的项目已经写的十分详尽了。
+
+具体工具：(还不是最终版)
+
+```json
+"dependencies": {
+    "@babel/plugin-proposal-decorators": "^7.17.9",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.0.1",
+    "@testing-library/user-event": "^13.5.0",
+    "axios": "^0.26.1",
+    "classnames": "^2.3.1",
+    "mockjs": "^1.1.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-router-dom": "^6.3.0",
+    "react-scripts": "5.0.1",
+    "redux-devtools-extension": "^2.13.9",
+    "redux-thunk": "^2.4.1",
+    "swiper": "^8.1.0"
+  },
+```
+
+
+
+```json
+"devDependencies": {
+    "animate.css": "^4.1.1",
+    "customize-cra": "^1.0.0",
+    "nprogress": "^0.2.0",
+    "react-app-rewired": "^2.2.1",
+    "react-redux": "^7.2.8",
+    "react-transition-group": "^4.4.2"
+  }
+```
+
+
 
 ## 1.useEffect发送请求
 
@@ -25,15 +61,15 @@ const [CategoryList,SetCategoryList] = useState([])
     // console.log(CategoryList,'List')
 ```
 
+## 2.React.memo,useCallBack,useMemo，useRef
 
+之前学的都好好的，到实战还真不知道具体的使用场景，还需要多练练啊。我打算把所有业务逻辑写完后，再来系统地看看那些地方可以优化。
 
-# 方案：
-
-## 1.路由
+## 3.路由
 
 ReactRouter6，相比较5，多了很多钩子
 
-## 2.状态管理
+## 4.状态管理
 
 我这个项目需要共享的状态不多也不少，可以使用状态管理工具。我选择的是React-Redux，但还是采用connect方案。
 
@@ -41,7 +77,7 @@ ReactRouter6，相比较5，多了很多钩子
 
 可以实现，有机会会实验一下。
 
-# Vue2和React二者区别：
+# vue2和React区别在本项目的体现：
 
 ## 1.配置文件
 
@@ -85,9 +121,9 @@ img必须闭合引入src有要求
 
 这个属性要写成defaultChecked
 
-## 4.路由
+## 4.JSX
 
-我使用的是Router6，确实比较新。
+用JSX map的时候，必须保证返回一个节点，v-for没这限制
 
 # 第一天：
 
@@ -245,4 +281,51 @@ state参数支持还更友好。
 
 ## 4.useState异步更新问题
 
-尚未解决
+尚未解决。
+
+# 第四天
+
+## 1.useState异步更新问题
+
+我采用useRef存储最新状态。
+
+传送门：
+
+[react useState 异步 数据获取不到 - 掘金 (juejin.cn)](https://juejin.cn/post/7019482437373657101)
+
+[useState改变值之后立刻获取最新的状态 - 掘金 (juejin.cn)](https://juejin.cn/post/6962856944130326558)
+
+成功解决，下面就是发请求，动态展示数据了。
+
+<img src="https://picture-feng.oss-cn-chengdu.aliyuncs.com/img/125.gif" style="zoom: 100%"></img>
+
+而且由于是额外添加了一个容器存放参数对象，我感觉useState都可以省了。
+
+## 2.后台出问题了
+
+我同时用vue2项目，apiPost和现在写的这个项目测试接口。因为后台不是我自己写的，频繁发送请求，直接504了……
+
+B站的小伙伴大多也遇见了这种情况呢。可能因为我测试的时候还有很多人也在一起吧。
+
+## 3.map
+
+类似v-for的操作，我们都需要map喔。JSX里面map return的时候必须只能返回一个节点
+
+## 4.面包屑
+
+说实话，原来的vue2项目这部分逻辑就写的不太好，老师也没写好。但主主要的原因还是，后台接口不完善，可用数据不是很多，而且数据比较混乱，很多商品和其销售属性牛头不对马嘴。白嫖的还是可以理解。
+
+然后就是我感觉面包屑也可以拆出去变成一个单独的组件喔，但是这个项目只有search组件这一个地方用了面包屑，不拆也行，就是业务逻辑变多了。
+
+## 5.更新地址栏
+
+删除面包屑，发请求，接着更新地址栏。更新地址栏的方法只有通过路由自己跳自己吗？
+
+## 6.兄弟组件通信
+
+场景是删除关键字面包屑（search组件），搜索栏清空(header组件),这两是兄弟关系。
+
+涉及到兄弟组件通信喔，context，pubsub，redux，props多传几次都行。先暂时放在这里，我看下后面还有没需要兄弟组件通信的地方。
+
+## 7.排序&阿里图标
+
