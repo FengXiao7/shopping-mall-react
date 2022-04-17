@@ -5,6 +5,7 @@ import style from './index.module.css'
 import classnames from 'classnames'
 import TypeNav from '@com/TypeNav';
 import SearchSelector from './SearchSelector'
+import Pagination from '@com/Pagination'
 const Search = () => {
     //编程式路由导航，用于更新地址栏，自己跳自己
     const navigate = useNavigate()
@@ -102,6 +103,41 @@ const Search = () => {
             getData()
         }
     }
+    //下面四个函数都和控制箭头上下有关
+    const isOne = () => {
+        return NewSearchParams.current.order.includes('1')
+    }
+    const isTwo = () => {
+        return NewSearchParams.current.order.includes('2')
+    }
+    const isAsc = () => {
+        return NewSearchParams.current.order.includes('asc')
+    }
+    const isDesc = () => {
+        return NewSearchParams.current.order.includes('desc')
+    }
+    //改变排序发送请求,flag是字符串形式的1或者2
+    const changeOrder = (flag) => {
+        return () => {
+            let originSort = NewSearchParams.current.order.split(":")[1];
+            originSort === "asc" ? NewSearchParams.current.order = flag + ":desc" : NewSearchParams.current.order = flag + ":asc";
+            getData();
+        }
+    }
+    //点击对应页数发送请求,传给子组件
+    const getPageNo = (pageNo) => {
+        return () => {
+            NewSearchParams.current.pageNo = pageNo
+            // console.log(pageNo)
+            getData()
+        }
+    }
+    //选择每页展示数据发送请求，传给子组件
+    const getPageSize = (pageSize) => {
+        NewSearchParams.current.pageSize = pageSize
+        // console.log(pageSize)
+        getData()
+    }
     //核心钩子，检测地址栏4个参数，有一个变化就发送请求
     useEffect(() => {
         let categoryName = searchInLocation.get('categoryname');
@@ -113,7 +149,7 @@ const Search = () => {
         //改变ref存储内容
         const now = { ...InitSearchParams, keyword, categoryName, category1Id, category2Id, category3Id }
         NewSearchParams.current = now
-        console.log(NewSearchParams.current)
+        // console.log(NewSearchParams.current)
         getData()
     },
         [
@@ -126,12 +162,7 @@ const Search = () => {
     //从返回的数据拆成三个数组和其他一些分页需要的数据
     const { trademarkList, attrsList, goodsList, total, pageSize, pageNo, totalPages } = SearchInfo
 
-    const isOne =()=>{
-        return 
-    }
-    const isTwo =()=>{
-        return NewSearchParams.current.order.includes('2')
-    }
+
 
     return (
         <>
@@ -196,89 +227,87 @@ const Search = () => {
                         <SearchSelector trademarkList={trademarkList} attrsList={attrsList} clickTradeMark={clickTradeMark} clickAttr={clickAttr} />
 
                         {/* <!--details--> */}
-                        <div className={classnames(style.details, style.clearfix)}>
-                            <div className={style['sui-navbar']}>
-                                <div className={classnames(style['navbar-inner'], style.filter)}>
-                                    <ul className={style['sui-nav']}>
-                                        <li className={NewSearchParams.current.order.includes('1')?style.active:undefined}>
-                                            <a>综合
-                                                <span 
-                                                className={classnames(style.iconfont,style['icon-xiangshangjiantou'])}
-                                                ></span>
-                                            </a>
-                                        </li>
-                                        <li className={NewSearchParams.current.order.includes('2')?style.active:undefined}>
-                                            <a href="#">价格⬆</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            {/* 商品列表 */}
-                            <div className={style['goods-list']}>
-                                <ul className={style['yui3-g']}>
-                                    {
-                                        goodsList.length > 0 &&
-                                        goodsList.map(goods => {
-                                            return (
-                                                <li className={style['yui3-u-1-5']} key={goods.id}>
-                                                    <div className={style['list-wrap']}>
-                                                        <div className={style['p-img']}>
-                                                            <a href="item.html" target="_blank"><img src={goods.defaultImg} /></a>
-                                                        </div>
-                                                        <div className={style.price}>
-                                                            <strong>
-                                                                <em>¥</em>
-                                                                <i>{goods.price}</i>
-                                                            </strong>
-                                                        </div>
-                                                        <div className={style.attr}>
-                                                            <a target="_blank" href="item.html" title="促销信息，下单即赠送三个月CIBN视频会员卡！【小米电视新品4A 58 火爆预约中】">{goods.title}</a>
-                                                        </div>
-                                                        <div className={style.commit}>
-                                                            <i className={style.command}>已有<span>2000</span>人评价</i>
-                                                        </div>
-                                                        <div className={style.operate}>
-                                                            <a href="success-cart.html" target="_blank" className={classnames(style['sui-btn'], style['btn-bordered'], style['btn-danger'])}>加入购物车</a>
-                                                            <a href="#" className={classnames(style['sui-btn'], style['btn-bordered'])}>收藏</a>
-                                                        </div>
-                                                    </div>
+                        {
+                            goodsList.length === 0 ? <h1 style={{textAlign: 'center',color: '#eb0d36'}}>暂无该商品信息！！！</h1> :
+                                <div className={classnames(style.details, style.clearfix)}>
+                                    <div className={style['sui-navbar']}>
+                                        <div className={classnames(style['navbar-inner'], style.filter)}>
+                                            <ul className={style['sui-nav']}>
+                                                <li className={isOne() ? style.active : null} onClick={changeOrder('1')}>
+                                                    <a>综合
+                                                        {
+                                                            isOne() &&
+                                                            <span
+                                                                className={['iconfont', isDesc() ? 'icon-xiangxiajiantou' : null, isAsc() ? 'icon-xiangshangjiantou' : null].join(' ')}
+                                                            ></span>
+                                                        }
+                                                    </a>
                                                 </li>
-                                            )
-                                        })
-                                    }
-                                </ul>
-                            </div>
-                            {/* 分页器 */}
-                            <div className={classnames(style.fr, style.page)}>
-                                <div className={classnames(style['sui-pagination'], style.clearfix)}>
-                                    <ul>
-                                        <li className={classnames(style.prev, style.disabled)}>
-                                            <a href="#">«上一页</a>
-                                        </li>
-                                        <li className={style.active}>
-                                            <a href="#">1</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">2</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">3</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">4</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">5</a>
-                                        </li>
-                                        <li className={style.dotted}><span>...</span></li>
-                                        <li className={style.next}>
-                                            <a href="#">下一页»</a>
-                                        </li>
-                                    </ul>
-                                    <div><span>共10页&nbsp;</span></div>
+                                                <li className={isTwo() ? style.active : null} onClick={changeOrder('2')}>
+                                                    <a>价格
+                                                        {
+                                                            isTwo() &&
+                                                            <span
+                                                                className={['iconfont', isDesc() ? 'icon-xiangxiajiantou' : null, isAsc() ? 'icon-xiangshangjiantou' : null].join(' ')}
+                                                            ></span>
+                                                        }
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    {/* 商品列表 */}
+
+                                    <div className={style['goods-list']}>
+                                        <ul className={style['yui3-g']}>
+                                            {
+                                                goodsList.length > 0 &&
+                                                goodsList.map(goods => {
+                                                    return (
+                                                        <li className={style['yui3-u-1-5']} key={goods.id}>
+                                                            <div className={style['list-wrap']}>
+                                                                <div className={style['p-img']}>
+                                                                    <a href="item.html" target="_blank"><img src={goods.defaultImg} /></a>
+                                                                </div>
+                                                                <div className={style.price}>
+                                                                    <strong>
+                                                                        <em>¥</em>
+                                                                        <i>{goods.price}</i>
+                                                                    </strong>
+                                                                </div>
+                                                                <div className={style.attr}>
+                                                                    <a target="_blank" href="item.html" title="促销信息，下单即赠送三个月CIBN视频会员卡！【小米电视新品4A 58 火爆预约中】">{goods.title}</a>
+                                                                </div>
+                                                                <div className={style.commit}>
+                                                                    <i className={style.command}>已有<span>2000</span>人评价</i>
+                                                                </div>
+                                                                <div className={style.operate}>
+                                                                    <a href="success-cart.html" target="_blank" className={classnames(style['sui-btn'], style['btn-bordered'], style['btn-danger'])}>加入购物车</a>
+                                                                    <a href="#" className={classnames(style['sui-btn'], style['btn-bordered'])}>收藏</a>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    )
+                                                })
+                                            }
+                                        </ul>
+                                    </div>
+                                    {/* 分页器 */}
+
+
+                                    <Pagination
+                                        pageSize={pageSize}
+                                        pageNo={pageNo}
+                                        total={total}
+                                        totalPages={totalPages}
+                                        continues='5'
+                                        getPageNo={getPageNo}
+                                        getPageSize={getPageSize}
+                                    />
+
+
                                 </div>
-                            </div>
-                        </div>
+                        }
                     </div>
                 </div>
             }

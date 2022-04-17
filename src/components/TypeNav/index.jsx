@@ -70,7 +70,7 @@ const TypeNav = () => {
                         <div className={style.sort}>
                             <div className={style['all-sort-list2']} onClick={goSearch}>
                                 {
-                                    CategoryList.slice(0, CategoryList.length - 1).map(Category_1 => {
+                                    CategoryList.slice(0, CategoryList.length - 2).map(Category_1 => {
                                         return (
                                             <div key={Category_1.categoryId} className={style.item}>
                                                 <h3>

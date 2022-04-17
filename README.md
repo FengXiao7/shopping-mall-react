@@ -329,3 +329,45 @@ B站的小伙伴大多也遇见了这种情况呢。可能因为我测试的时�
 
 ## 7.排序&阿里图标
 
+我都是在public下在线引入css
+
+这里写法又不一样了
+
+react写法
+
+```jsx
+<li className={isOne() ? style.active : null} onClick={changeOrder('1')}>
+    <a>综合
+        {
+            isOne() &&
+                <span
+ className={['iconfont', isDesc() ? 'icon-xiangxiajiantou' : null, isAsc() ? 'icon-xiangshangjiantou' : null].join(' ')}
+                ></span>
+        }
+    </a>
+</li>
+```
+
+vue写法
+
+```vue
+<li :class="{ active: isOne }" @click="changeOrder('1')">
+    <a>综合
+        <span
+              v-if="isOne"
+              class="iconfont"
+              :class="{
+                        'icon-xiangshangjiantou': isAsc,
+                        'icon-xiangxiajiantou': isDesc,
+                      }"
+        ></span
+    ></a>
+</li>
+```
+
+差别还是很大的
+
+## 8.自定义分页器组件
+
+分页器这里，我又添了个改变每页展示数据的功能。原笔记把自定义分页器说得十分详尽，这里不再赘述。
+
