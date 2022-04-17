@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { useParams, useSearchParams, useNavigate } from 'react-router-dom'
+import React, { useState, useEffect, useRef} from 'react';
+import { useParams, useSearchParams, useNavigate,Link } from 'react-router-dom'
 import { reqGetSearchInfo } from '@/api'
 import style from './index.module.css'
 import classnames from 'classnames'
@@ -228,7 +228,7 @@ const Search = () => {
 
                         {/* <!--details--> */}
                         {
-                            goodsList.length === 0 ? <h1 style={{textAlign: 'center',color: '#eb0d36'}}>暂无该商品信息！！！</h1> :
+                            goodsList.length === 0 ? <h1 style={{ textAlign: 'center', color: '#eb0d36' }}>暂无该商品信息！！！</h1> :
                                 <div className={classnames(style.details, style.clearfix)}>
                                     <div className={style['sui-navbar']}>
                                         <div className={classnames(style['navbar-inner'], style.filter)}>
@@ -267,7 +267,9 @@ const Search = () => {
                                                         <li className={style['yui3-u-1-5']} key={goods.id}>
                                                             <div className={style['list-wrap']}>
                                                                 <div className={style['p-img']}>
-                                                                    <a href="item.html" target="_blank"><img src={goods.defaultImg} /></a>
+                                                                    <Link to={`/detail/${goods.id}`}>
+                                                                        <img src={goods.defaultImg} />
+                                                                    </Link>
                                                                 </div>
                                                                 <div className={style.price}>
                                                                     <strong>
@@ -293,8 +295,6 @@ const Search = () => {
                                         </ul>
                                     </div>
                                     {/* 分页器 */}
-
-
                                     <Pagination
                                         pageSize={pageSize}
                                         pageNo={pageNo}

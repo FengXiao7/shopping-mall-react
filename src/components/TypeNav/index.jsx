@@ -42,8 +42,8 @@ const TypeNav = () => {
         let element = event.target
         let url = `/search`
         let { categoryname, categoryid_1, categoryid_2, categoryid_3 } = element.dataset;
-        
-        if(JSON.stringify(params) !== '{}'){
+
+        if(JSON.stringify(params) !== '{}' && typeof params.keyword!=='undefined'){
             url+=`/${params.keyword}`
         }
         if (categoryname) {
