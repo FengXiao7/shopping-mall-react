@@ -1,14 +1,45 @@
 // 请确认安装了classnames
 import classnames from 'classnames'
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
+import { reqGetGoodsInfo, reqAddOrUpdateShopCart } from '@/api'
 import style from './index.module.css'
 import TypeNav from '@com/TypeNav'
-import { reqGetGoodsInfo } from '@/api'
+import Zoom from './Zoom';
+import ImageList from './ImageList'
+
 
 const Detail = () => {
     const params = useParams()
+    const navigate = useNavigate()
     const [goodsInfo, SetgoodsInfo] = useState({})
+    //无用state,用于强制更新
+    const [conut, SetCount] = useState(0)
+    //商品数目
+    const [skuNum, SetSkuNum] = useState(1)
+    const { categoryView, skuInfo, spuSaleAttrList, price } = goodsInfo
+    //点击商品属性，改变样式,然后强制渲染
+    const changeActive = (value, valueList) => {
+        return () => {
+            valueList.forEach(item => {
+                item.isChecked = '0'
+            })
+            value.isChecked = '1'
+            SetCount(conut + 1)
+        }
+    }
+    //将产品添加到购物车中,发请求
+    const AddOrUpdateShopCart = async () => {
+
+        let result = await reqAddOrUpdateShopCart(params.skuid, skuNum)
+        if (result.code === 200) {
+            sessionStorage.setItem('SKUINFO',JSON.stringify(skuInfo))
+            navigate(`/addCartSuccess?skuNum=${skuNum}`)
+        } else {
+            return Promise.reject(new Error('faile'))
+        }
+    }
+    //根据商品ID发请求
     useEffect(() => {
         const doAsync = async () => {
             let result = await reqGetGoodsInfo(params.skuid)
@@ -17,45 +48,46 @@ const Detail = () => {
             }
         }
         doAsync().catch((error) => console.log(error.msg))
-    }, [])
-    console.log(goodsInfo)
+    }, [params.skuid])
     return (
         <div className={style.detail}>
             <TypeNav />
             {/* <!-- 主要内容区域 --> */}
             {
-                JSON.stringify(goodsInfo) === '{}' ? <h1 style={{ textAlign: 'center', color: '#eb0d36' }}>暂无该商品信息！！！</h1> :
+                JSON.stringify(goodsInfo) === '{}' || categoryView === null ? <h1 style={{ textAlign: 'center', color: '#eb0d36' }}>暂无该商品信息！！！请等待！！！</h1> :
                     <section className={style.con}>
                         {/* <!-- 导航路径区域 --> */}
                         <div className={style.conPoin}>
-                            <div className={style.conPoin}>
-                                <a href="###">手机、数码、通讯</a>
-                                <a href="###">手机</a>
-                                <a href="###">Apple苹果</a>
-                                <a>iphone 6S系类</a>
-                            </div>
+                            {
+                                categoryView.category1Id &&
+                                <span>{categoryView.category1Name}</span>
+                            }
+                            {
+                                categoryView.category2Id &&
+                                <span>{categoryView.category2Name}</span>
+                            }
+                            {
+                                categoryView.category3Id &&
+                                <span>{categoryView.category3Name}</span>
+                            }
                         </div>
                         {/* <!-- 主要内容区域 --> */}
                         <div className={style.mainCon}>
                             {/* <!-- 左侧放大镜区域 --> */}
                             <div className={style.previewWrap}>
                                 {/* <!--放大镜效果--> */}
-                                <div className={style.preview}>
-                                    <div className={style.jqzoom}>
-                                        <img src={require("./images/s1.png")} />
-                                    </div>
-                                </div>
+                                <Zoom imgList={skuInfo.skuImageList} />
                                 {/* <!--下方的缩略图--> */}
-
+                                <ImageList imgList={skuInfo.skuImageList} />
                             </div>
                             {/* <!-- 右侧选择区域布局 --> */}
                             <div className={style.InfoWrap}>
                                 <div className={style.goodsDetail}>
                                     <h3 className={style.InfoName}>
-                                        11111111111111111111111111111111111
+                                        {skuInfo.skuName}
                                     </h3>
                                     <p className={style.news}>
-                                        2222222222222222222222222
+                                        {skuInfo.skuDesc}
                                     </p>
                                     <div className={style.priceArea}>
                                         <div className={style.priceArea1}>
@@ -63,7 +95,7 @@ const Detail = () => {
                                                 价&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;格
                                             </div>
                                             <div className={style.price}>
-                                                <i>¥</i>
+                                                <i>¥{price}</i>
                                                 <em></em>
                                                 <span>降价通知</span>
                                             </div>
@@ -102,36 +134,59 @@ const Detail = () => {
                                     <div className={style.choose}>
                                         <div className={style.chooseArea}>
                                             <div className={style.choosed}></div>
-                                            <dl
-
-                                            >
-                                                <dt className={style.title}>选择</dt>
-                                                <dd
-                                                    changepirce="0"
-                                                    className={style.active}
-
-                                                >
-                                                    2222222222222222
-                                                </dd>
-                                            </dl>
+                                            {
+                                                spuSaleAttrList.map(spuSale => {
+                                                    return (
+                                                        <dl key={spuSale.baseSaleAttrId}>
+                                                            <dt className={style.title}>选择{spuSale.saleAttrName}</dt>
+                                                            {
+                                                                spuSale.spuSaleAttrValueList.map(value => {
+                                                                    return (
+                                                                        <dd
+                                                                            key={value.id}
+                                                                            changepirce="0"
+                                                                            className={value.isChecked === '1' ? style.active : null}
+                                                                            style={{ cursor: 'pointer' }}
+                                                                            onClick={changeActive(value, spuSale.spuSaleAttrValueList)}
+                                                                        >
+                                                                            {value.saleAttrValueName}
+                                                                        </dd>
+                                                                    )
+                                                                })
+                                                            }
+                                                        </dl>
+                                                    )
+                                                })
+                                            }
                                         </div>
                                         <div className={style.cartWrap}>
                                             <div className={style.controls}>
-                                                <input
-                                                    autoComplete="off"
-                                                    className={style.itxt}
-                                                    v-model="skuNum"
-                                                />
-                                                <a href="#" className={style.plus}>+</a>
+                                                <span style={{
+                                                    display: 'inline-block',
+                                                    height: '36px',
+                                                    width: '37px',
+                                                    backgroundColor: '#e12228',
+                                                    color: 'white',
+                                                    textAlign: 'center',
+                                                    lineHeight: '36px'
+
+                                                }}>{skuNum}</span>
+                                                <a
+                                                    href="#"
+                                                    className={style.plus}
+                                                    onClick={() => SetSkuNum(skuNum => skuNum + 1)}
+                                                >+</a>
                                                 <a
                                                     href="#"
                                                     className={style.mins}
+                                                    onClick={() => { skuNum === 1 ? SetSkuNum(1) : SetSkuNum(skuNum => skuNum - 1) }}
                                                 >-</a>
                                             </div>
                                             <div className={style.add}>
                                                 <a
                                                     href="#"
                                                     style={{ cursor: 'pointer' }}
+                                                    onClick={AddOrUpdateShopCart}
                                                 >加入购物车</a>
                                             </div>
                                         </div>

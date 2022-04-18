@@ -77,6 +77,12 @@ ReactRouter6，相比较5，多了很多钩子
 
 可以实现，有机会会实验一下。
 
+## 5.组件通信
+
+父子用props，兄弟我用的是PubSub消息订阅。
+
+然后用这个PubSub，我感觉使用体验上和Vue的自定义事件差不多，写的时候很爽，但是比较混乱。
+
 # vue2和React区别在本项目的体现：
 
 ## 1.配置文件
@@ -401,3 +407,20 @@ vue写法
 
 只要涉及到后台，就会有一些奇怪的数据喔。有时候你点图片可以发请求，发请求也成功了，数据也得到了，但是数据键都有，就是没值，全为null或者0.就很坑
 
+## 3.点击商品属性，不改变样式的问题
+
+这个是因为虽然改变了isChecked，但是没有重新渲染。
+
+我想了个邪门的方法，维护一个没用的state，改变isChecked的时候，更新这个无用的state就行了。
+
+这个显然不是最优解，有没啥更好的方法呢？
+
+## 4.放大器
+
+有坑，因为获得的鼠标移动事件不是原生的事件，是React的合成事件。SyntheticBaseEvent。然后他上面没有offsetX。
+
+我们用event.nativeEvent获取原生的事件。
+
+传送门：[React的mouseEvent没有offsetX/offsetY - VoidCC](http://cn.voidcc.com/question/p-bhvwmgsx-dq.html)
+
+然后就是放大器Zoom组件和下方缩略图ImageList组件是兄弟组件，需要把ImageList的图片索引传给Zoom。涉及到兄弟组件通信，我用的是PubSub来通信。

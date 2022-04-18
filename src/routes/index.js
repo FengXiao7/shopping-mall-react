@@ -3,6 +3,8 @@ import Login from '@pag/Login'
 import Register from '@pag/Register'
 import Search from '@pag/Search'
 import Detail from '@pag/Detail'
+import AddCartSuccess from '@pag/AddCartSuccess'
+import ShopCart from '@pag/ShopCart'
 import {Navigate} from 'react-router-dom'
 
 const routes = [
@@ -29,6 +31,14 @@ const routes = [
     {
         path:'/detail/:skuid',
         element:<Detail/>
+    },
+    {
+        path:'/addCartSuccess',
+        element:<AddCartSuccess/>
+    },
+    {
+        path:'/shopCart',
+        element:<ShopCart/>
     },
     {
 		path:'/',

@@ -18,8 +18,8 @@ export const reqGetGoodsInfo=(skuid)=>requests({url:`/item/${skuid}`,method:'get
 
 //将产品添加到购物车中，需要两个参数，产品ID和个数
 export const reqAddOrUpdateShopCart=(skuId,skuNum)=> requests({url:`/cart/addToCart/${skuId}/${skuNum}`,method:'post'})
-//获取购物车列表s
 
+//获取购物车列表s
 export const reqGetCartList=()=> requests({url:'/cart/cartList',method:'get'})
 
 //删除购物车商品
