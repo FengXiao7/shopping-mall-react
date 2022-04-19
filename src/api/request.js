@@ -1,6 +1,7 @@
 //对于axios进行二次封装
 import axios from "axios";
 import nprogress from "nprogress"
+import {getUUID} from '@/utils/uuid'
 import "nprogress/nprogress.css";
 
 
@@ -12,6 +13,9 @@ const requests = axios.create({
 //请求拦截器
 requests.interceptors.request.use((config)=>{
     nprogress.start()//进度条开始
+    if(getUUID()){
+        config.headers.userTempId=getUUID()
+    }
     return config;
 },(error)=>{
     return Promise.reject(error);

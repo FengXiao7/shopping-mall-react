@@ -121,7 +121,13 @@ img必须闭合引入src有要求
 
 ### checked：
 
-这个属性要写成defaultChecked
+这个属性写成defaultChecked，代表非受控组价
+
+## value:
+
+写成defaultValue代表非受控，和上边的defaultChecked一个道理
+
+[react里面的value和defaultValue_唐霜的博客 (tangshuang.net)](https://www.tangshuang.net/4036.html)
 
 ### 多个单词的属性：
 
@@ -424,3 +430,45 @@ vue写法
 传送门：[React的mouseEvent没有offsetX/offsetY - VoidCC](http://cn.voidcc.com/question/p-bhvwmgsx-dq.html)
 
 然后就是放大器Zoom组件和下方缩略图ImageList组件是兄弟组件，需要把ImageList的图片索引传给Zoom。涉及到兄弟组件通信，我用的是PubSub来通信。
+
+## 5.路由跳转至页面顶部
+
+在useEffect添一句window.scrollTo(0,0)就行。在vue2项目里面我们使用的是滚动事件解决。
+
+# 第六天
+
+今天开始开发购物车组件了。
+
+## 1.游客UUID
+
+配合后台在header里面添加一个自定义请求头userTempld，往里面放一个uuid就行。然后我们的uuid是放在localStorage里面做持久化存储。
+
+## 2.商品数目
+
+我们使用input框改变商品数目时，发现无法输入。
+
+[react里面的value和defaultValue_唐霜的博客 (tangshuang.net)](https://www.tangshuang.net/4036.html)
+
+我发现这个输入框有重大bug。
+
+我想使用onBlur失去焦点后再发请求，但是直接报错。因为value必须要和onChange搭配，不然无法输入。
+
+暂时没找到啥好的解决方案。而且由于添加了500ms的节流，用户输入会有延迟。
+
+## 3.删除商品
+
+我发现如果有多个商品，可以正常删除。但是如果只有一个商品，删除后，需要用户手动更新一下才能正确显示购物车为空的提示信息，这是为啥？我觉得删除完后，再次发送获取购物车的请求，会改变状态，应该重新渲染才对，应该可以正确显示，但事实并非如此。目前还没找到错。
+
+## 4.删除所选商品
+
+这个涉及到在循环内使用async await。我们和第三点一样，还是有类似的问题，如果把所有的都删除，需要用户手动更新一下才能正确显示购物车为空的提示信息。
+
+[五种在循环中使用 async/await 的方法 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/359341530)
+
+## 5.全选
+
+我这个是真的不知道为啥，已经checked，但是页面还是没有渲染已勾选状态。有点懵
+
+<img src="https://picture-feng.oss-cn-chengdu.aliyuncs.com/img/126.gif" style="zoom: 100%"></img>
+
+<img src="https://picture-feng.oss-cn-chengdu.aliyuncs.com/img/127.gif" style="zoom: 100%"></img>

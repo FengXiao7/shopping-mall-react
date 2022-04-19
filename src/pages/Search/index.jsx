@@ -6,6 +6,7 @@ import classnames from 'classnames'
 import TypeNav from '@com/TypeNav';
 import SearchSelector from './SearchSelector'
 import Pagination from '@com/Pagination'
+import PubSub from 'pubsub-js';
 const Search = () => {
     //编程式路由导航，用于更新地址栏，自己跳自己
     const navigate = useNavigate()
@@ -51,7 +52,8 @@ const Search = () => {
                 }
             case 'keyword':
                 return () => {
-                    //把参数改一下再跳转，这样就可以发请求了
+                    //把参数改一下再跳转，这样就可以发请求了。顺便清除一下header组件搜索框里的关键字
+                    PubSub.publish('clearKeyword',null)
                     if (NewSearchParams.current.categoryName) {
                         let url = `/search?categoryname=${NewSearchParams.current.categoryName}&`
                         if (NewSearchParams.current.category1Id) {

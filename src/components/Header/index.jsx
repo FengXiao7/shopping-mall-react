@@ -1,10 +1,11 @@
 import classnames from 'classnames'
-import React, { createRef } from 'react';
+import React, { createRef,useEffect,useRef } from 'react';
 import style from './index.module.css'
 import { Link,useNavigate,useSearchParams} from 'react-router-dom'
+import PubSub from 'pubsub-js';
 
 const Header = () => {
-    const myRef = createRef()
+    const myRef = useRef()
     const navigate = useNavigate();
     const [searchParams] = useSearchParams()
     //整理并发送参数至search组件
@@ -27,7 +28,14 @@ const Header = () => {
         // console.log(url,'header')
         navigate(url)
     }
-
+    useEffect(() => {
+       let clearKeyword = PubSub.subscribe('clearKeyword',(msg,obj)=>{
+            myRef.current.value=''
+        })
+        return () => {
+            PubSub.subscribe(clearKeyword)
+        };
+    }, []);
     return (
         <div>
             <header className={style.header}>
@@ -44,7 +52,7 @@ const Header = () => {
                         </div>
                         <div className={style.typeList}>
                             <a href="###">我的订单</a>
-                            <a href="###">我的购物车</a>
+                            <Link to="/shopCart">我的购物车</Link>
                             <a href="###">我的尚品汇</a>
                             <a href="###">尚品汇会员</a>
                             <a href="###">企业采购</a>

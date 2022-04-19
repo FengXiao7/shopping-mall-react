@@ -1,2 +1,18 @@
-
-console.log(undefined&&false)
+if('0'){
+    console.log('0')
+}
+if(0){
+    console.log(0)
+}
+if(1){
+    console.log(1+3)
+}
+if('1'){
+    console.log('1')
+}
+if(null){
+    console.log('null')
+}
+if(undefined){
+    console.log('undefined')
+}

@@ -47,6 +47,7 @@ const Detail = () => {
                 SetgoodsInfo(result.data)
             }
         }
+        window.scrollTo(0,0)
         doAsync().catch((error) => console.log(error.msg))
     }, [params.skuid])
     return (
