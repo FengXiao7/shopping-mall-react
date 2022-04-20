@@ -1,0 +1,200 @@
+.trade-container .title {
+  width: 1200px;
+  margin: 0 auto;
+  font-size: 14px;
+  line-height: 21px;
+}
+.trade-container .content {
+  width: 1200px;
+  margin: 10px auto 0;
+  border: 1px solid #dddddd;
+  padding: 25px;
+  box-sizing: border-box;
+}
+.trade-container .content .receive,
+.trade-container .content .pay {
+  line-height: 36px;
+  margin: 18px 0;
+}
+.trade-container .content .address {
+  padding-left: 20px;
+  margin-bottom: 15px;
+}
+.trade-container .content .address .username {
+  float: left;
+  width: 100px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  border: 1px solid #ddd;
+  position: relative;
+}
+.trade-container .content .address .username::after {
+  content: "";
+  display: none;
+  width: 13px;
+  height: 13px;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  background: url(images/choosed.png) no-repeat;
+}
+.trade-container .content .address .username.selected {
+  border-color: #e1251b;
+}
+.trade-container .content .address .username.selected::after {
+  display: block;
+}
+.trade-container .content .address p {
+  width: 610px;
+  float: left;
+  line-height: 30px;
+  margin-left: 10px;
+  padding-left: 5px;
+  cursor: pointer;
+}
+.trade-container .content .address p .s1 {
+  float: left;
+}
+.trade-container .content .address p .s2 {
+  float: left;
+  margin: 0 5px;
+}
+.trade-container .content .address p .s3 {
+  float: left;
+  width: 56px;
+  height: 24px;
+  line-height: 24px;
+  margin-left: 10px;
+  background-color: #878787;
+  color: #fff;
+  margin-top: 3px;
+  text-align: center;
+}
+.trade-container .content .address p:hover {
+  background-color: #ddd;
+}
+.trade-container .content .line {
+  height: 1px;
+  background-color: #ddd;
+}
+.trade-container .content .way {
+  width: 1080px;
+  height: 110px;
+  background: #f4f4f4;
+  padding: 15px;
+  margin: 0 auto;
+}
+.trade-container .content .way h5 {
+  line-height: 50px;
+}
+.trade-container .content .way .info {
+  margin-top: 20px;
+}
+.trade-container .content .way .info .s1 {
+  float: left;
+  border: 1px solid #ddd;
+  width: 120px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  margin-right: 10px;
+}
+.trade-container .content .way .info p {
+  line-height: 30px;
+}
+.trade-container .content .detail {
+  width: 1080px;
+  background: #feedef;
+  padding: 15px;
+  margin: 2px auto 0;
+}
+.trade-container .content .detail h5 {
+  line-height: 50px;
+}
+.trade-container .content .detail .list {
+  display: flex;
+  justify-content: space-between;
+}
+.trade-container .content .detail .list li {
+  line-height: 30px;
+}
+.trade-container .content .detail .list li p {
+  margin-bottom: 20px;
+}
+.trade-container .content .detail .list li h4 {
+  color: #c81623;
+  font-weight: 400;
+}
+.trade-container .content .detail .list li h3 {
+  color: #e12228;
+}
+.trade-container .content .bbs {
+  margin-bottom: 15px;
+}
+.trade-container .content .bbs h5 {
+  line-height: 50px;
+}
+.trade-container .content .bbs textarea {
+  width: 100%;
+  border-color: #e4e2e2;
+  line-height: 1.8;
+  outline: none;
+  resize: none;
+}
+.trade-container .content .bill h5 {
+  line-height: 50px;
+}
+.trade-container .content .bill div {
+  padding-left: 15px;
+}
+.trade-container .money {
+  width: 1200px;
+  margin: 20px auto;
+}
+.trade-container .money ul {
+  width: 220px;
+  float: right;
+}
+.trade-container .money ul li {
+  line-height: 30px;
+  display: flex;
+  justify-content: space-between;
+}
+.trade-container .money ul li i {
+  color: red;
+}
+.trade-container .trade {
+  box-sizing: border-box;
+  width: 1200px;
+  padding: 10px;
+  margin: 10px auto;
+  text-align: right;
+  background-color: #f4f4f4;
+  border: 1px solid #ddd;
+}
+.trade-container .trade div {
+  line-height: 30px;
+}
+.trade-container .trade .price span {
+  color: #e12228;
+  font-weight: 700;
+  font-size: 14px;
+}
+.trade-container .trade .receiveInfo {
+  color: #999;
+}
+.trade-container .sub {
+  width: 1200px;
+  margin: 0 auto 10px;
+}
+.trade-container .sub .subBtn {
+  float: right;
+  width: 164px;
+  height: 56px;
+  font: 700 18px "微软雅黑";
+  line-height: 56px;
+  text-align: center;
+  color: #fff;
+  background-color: #e1251b;
+}

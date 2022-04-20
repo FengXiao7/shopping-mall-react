@@ -1,41 +1,75 @@
 import classnames from 'classnames'
-import React, { createRef,useEffect,useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import style from './index.module.css'
-import { Link,useNavigate,useSearchParams} from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { reqUserInfo,reqLogout } from '@/api'
 import PubSub from 'pubsub-js';
+import { getToken, clearToken } from '@/utils/token'
 
 const Header = () => {
+    //装搜索栏内容
     const myRef = useRef()
+    //装用户名
+    const [userName, SetUserName] = useState('')
     const navigate = useNavigate();
     const [searchParams] = useSearchParams()
     //整理并发送参数至search组件
-    const goSearch = ()=>{
-        let keyword=myRef.current.value
-        if(!keyword){
+    const goSearch = () => {
+        let keyword = myRef.current.value
+        if (!keyword) {
             return
         }
-        let url=`search/${keyword}`
-        if(searchParams.get('categoryname')){
-            url+=`?categoryname=${searchParams.get('categoryname')}`
-            if(searchParams.get('category1Id')){
-                url+=`&category1Id=${searchParams.get('category1Id')}`
-            }else if(searchParams.get('category2Id')){
-                url+=`&category2Id=${searchParams.get('category2Id')}`
-            }else{
-                url+=`&category3Id=${searchParams.get('category3Id')}`
+        let url = `search/${keyword}`
+        if (searchParams.get('categoryname')) {
+            url += `?categoryname=${searchParams.get('categoryname')}`
+            if (searchParams.get('category1Id')) {
+                url += `&category1Id=${searchParams.get('category1Id')}`
+            } else if (searchParams.get('category2Id')) {
+                url += `&category2Id=${searchParams.get('category2Id')}`
+            } else {
+                url += `&category3Id=${searchParams.get('category3Id')}`
             }
         }
         // console.log(url,'header')
         navigate(url)
     }
+    //退出登录
+    const logOut = async() => {
+        let result = await reqLogout()
+        console.log(result)
+        if(result.code===200){
+            clearToken()
+            SetUserName('')
+            navigate('/home')
+        }
+        
+    }
+    //请求用户名
+    const getUserName = async () => {
+        try {
+            let result = await reqUserInfo()
+            if (result.code === 200) {
+                SetUserName(result.data.name)
+            } else if (result.code === 208) {
+                SetUserName('')
+            }
+        } catch (error) {
+            alert(error.msg)
+        }
+    }
+    //清除搜索栏
     useEffect(() => {
-       let clearKeyword = PubSub.subscribe('clearKeyword',(msg,obj)=>{
-            myRef.current.value=''
+        getUserName()
+        let clearKeyword = PubSub.subscribe('clearKeyword', (msg, obj) => {
+            myRef.current.value = ''
         })
         return () => {
             PubSub.subscribe(clearKeyword)
         };
     }, []);
+    useEffect(()=>{
+        getUserName()
+    },[getToken()])
     return (
         <div>
             <header className={style.header}>
@@ -44,11 +78,21 @@ const Header = () => {
                     <div className={style.container}>
                         <div className={style.loginList}>
                             <p>尚品汇欢迎您！</p>
-                            <p>
-                                <span>请</span>
-                                <Link to="/login">登录</Link>
-                                <Link to="/register" className={style.register}>免费注册</Link>
-                            </p>
+                            {/* 用户名 */}
+                            {
+                                userName === '' ?
+                                    <p>
+                                        <span>请</span>
+                                        <Link to="/login">登录</Link>
+                                        <Link to="/register" className={style.register}>免费注册</Link>
+                                    </p>
+                                    :
+                                    <p>
+                                        <a>{userName}</a>
+                                        <a style={{ cursor: "pointer" }} className={style.register} onClick={logOut}>退出登录</a>
+                                    </p>
+                            }
+
                         </div>
                         <div className={style.typeList}>
                             <a href="###">我的订单</a>

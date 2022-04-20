@@ -1,8 +1,12 @@
 import classnames from 'classnames'
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import style from './index.module.css'
-import { Link } from 'react-router-dom';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Link,useNavigate } from 'react-router-dom';
+import { reqUserLogin } from '@/api'
+import {setToken} from '@/utils/token'
 const Login = () => {
+    const navigate = useNavigate()
     return (
         <>
             {/* <!-- 登录 --> */}
@@ -11,7 +15,7 @@ const Login = () => {
                     <div className={style.loginform}>
                         <ul className={classnames(style.tab, style['clearFix'])}>
                             <li>
-                                <a href="##" style={{borderRight: 0}}>扫描登录</a>
+                                <a href="##" style={{ borderRight: 0 }}>扫描登录</a>
                             </li>
                             <li>
                                 <a href="##" className={style.current}>账户登录</a>
@@ -19,29 +23,44 @@ const Login = () => {
                         </ul>
 
                         <div className={style.content}>
-                            <form action="##">
-                                <div className={classnames(style['input-text'],style.clearFix)}>
-                                    <i></i>
-                                    <input type="text" placeholder="手机号" />
-                                    <span className={style['error-msg']}>错误提示信息</span>
-                                </div>
+                            <Formik
+                                initialValues={{ phone: "", password: "", }}
+                                onSubmit={async values => {
+                                    try {
+                                        let result = await reqUserLogin(values)
+                                        if(result.code===200){
+                                            setToken(result.data.token)
+                                            navigate('/home')
+                                        }else if(result.code===207){
+                                            alert(result.message)
+                                        }
+                                    } catch (error) {
+                                        alert(error.ErrorMessage)
+                                    }
+                                }}
+                            >
+                                <Form>
+                                    <div className={classnames(style['input-text'], style.clearFix)}>
+                                        <i></i>
+                                        <Field name="phone" placeholder="手机号" />
+                                    </div>
+                                    <div className={classnames(style['input-text'], style.clearFix)}>
+                                        <i className={style.pwd}></i>
+                                        <Field name="password" placeholder="密码" />
+                                    </div>
 
-                                <div className={classnames(style['input-text'], style.clearFix)}>
-                                    <i className={style.pwd}></i>
-                                    <input type="text" placeholder="请输入密码" />
-                                    <span className={style['error-msg']}>错误提示信息</span>
-                                </div>
+                                    <div className={classnames(style['setting'], style['clearFix'])}>
+                                        <label className={classnames(style['checkbox'], style['inline'])}>
+                                            <input name="m1" type="checkbox" value="2" defaultChecked={true} />
+                                            自动登录
+                                        </label>
+                                        <span className={style.forget}>忘记密码？</span>
+                                    </div>
+                                    <button className={style.btn} type='submit'>登&nbsp;&nbsp;录</button>
+                                </Form>
+                            </Formik>
 
-                                <div className={classnames(style['setting'], style['clearFix'])}>
-                                    <label className={classnames(style['checkbox'], style['inline'])}>
-                                        <input name="m1" type="checkbox" value="2" defaultChecked="" />
-                                        自动登录
-                                    </label>
-                                    <span className={style.forget}>忘记密码？</span>
-                                </div>
-                                <button className={style.btn}>登&nbsp;&nbsp;录</button>
 
-                            </form>
                             <div className={classnames(style.call, style.clearFix)}>
                                 <ul>
                                     <li><img src={require("./images/qq.png")} alt="" /></li>

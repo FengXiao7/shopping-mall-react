@@ -2,8 +2,11 @@ import React, { useEffect, useState } from 'react';
 import style from './index.module.css'
 import { reqGetCartList, reqAddOrUpdateShopCart, reqDeleteCart, reqUpdateChartChecked } from '@/api'
 import throttle from "lodash/throttle";
+import { useNavigate } from 'react-router-dom';
+import {getToken} from '@/utils/token'
 const ShopCart = () => {
     const [CartList, SetCartList] = useState([])
+    const navigate = useNavigate()
     //获取购物车列表
     const getCartList = async () => {
         let result = await reqGetCartList()
@@ -119,6 +122,15 @@ const ShopCart = () => {
         getCartList()
 
     }
+    //路由跳转至Trade组件
+    const goToTrade = ()=>{
+        if(getToken()){
+            navigate('/trade')
+        }else{
+            alert('请登录')
+            navigate('/login')
+        }
+    }
     useEffect(() => {
         getCartList()
     }, [])
@@ -193,7 +205,7 @@ const ShopCart = () => {
                         <i className={style.summoney}>{totalPrice()}</i>
                     </div>
                     <div className={style.sumbtn}>
-                        <a className={style['sum-btn']} href="###" target="_blank">结算</a>
+                        <a className={style['sum-btn']} onClick={goToTrade}>结算</a>
                     </div>
                 </div>
             </div>

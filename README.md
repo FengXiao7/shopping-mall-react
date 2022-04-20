@@ -107,9 +107,21 @@ https://blog.csdn.net/weixin_42681295/article/details/108670040
 
 ![image-20220413225721597](https://picture-feng.oss-cn-chengdu.aliyuncs.com/img/image-20220413225721597.png)
 
-### 解决方案：
+### 1号解决方案：
 
 reset.css里面就只有清除浮动这一个是自定义的属性，直接写在style里面就行。但我觉得一定有更好的解决方案，不然一旦需要清除浮动就需要手动添加clearFix到对应的xxx.module.css里面，那这样在public里面全局引入的reset.css还有什么意义呢？
+
+### 2号解决方案：
+
+不用1号方案那样写。
+
+直接这样写：
+
+```jsx
+className={[style.tab,'clearFix'].join(' ')}
+```
+
+
 
 ## 3.标签
 
@@ -472,3 +484,29 @@ vue写法
 <img src="https://picture-feng.oss-cn-chengdu.aliyuncs.com/img/126.gif" style="zoom: 100%"></img>
 
 <img src="https://picture-feng.oss-cn-chengdu.aliyuncs.com/img/127.gif" style="zoom: 100%"></img>
+
+# 第七天
+
+今天主要开发登录和注册组件
+
+## 1.注册组件
+
+vue2项目用的是vee-validate插件进行验证。我在这里用的是formik进行表单验证。把官方例子抄过来，改改就行了。我感觉这个formik做表单验证很方便，以后react项目里面就用它了。
+
+## 2.验证码
+
+这个验证码，根本不用用户输入，直接点击按钮就行。而且是个假的验证码，不能通过手机号发送，因为通过手机接收要钱，可以理解。那我感觉把验证码框直接disabled得了。
+
+这里又是受控组件input的value的坑，不再赘述。
+
+## 3.登录组件
+
+这个后台接口不是很完善，输入错误手机号，输入正确手机号但密码错误都没有相应接口。
+
+经我测试以上错误情况统一返回是这个：
+
+![image-20220420165935935](https://picture-feng.oss-cn-chengdu.aliyuncs.com/img/image-20220420165935935.png)
+
+## 4.Trade组件
+
+这个地方需要是否已经登录，登录后才能从结算按钮跳转过来。原vue2项目写的是路由守卫，我在这里只是根据token简单判断了下。然后就是Trade组件里面要用到两个接口，其中一个获取用户登录信息的接口reqAddressList，我怎样测试都得不到数据，只能作罢。

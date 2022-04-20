@@ -46,6 +46,7 @@
   "devDependencies": {
     "animate.css": "^4.1.1",
     "customize-cra": "^1.0.0",
+    "formik": "^2.2.9",
     "nprogress": "^0.2.0",
     "react-app-rewired": "^2.2.1",
     "react-redux": "^7.2.8",

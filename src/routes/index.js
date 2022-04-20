@@ -5,6 +5,7 @@ import Search from '@pag/Search'
 import Detail from '@pag/Detail'
 import AddCartSuccess from '@pag/AddCartSuccess'
 import ShopCart from '@pag/ShopCart'
+import Trade from '@pag/Trade'
 import {Navigate} from 'react-router-dom'
 
 const routes = [
@@ -39,6 +40,10 @@ const routes = [
     {
         path:'/shopCart',
         element:<ShopCart/>
+    },
+    {
+        path:'/trade',
+        element:<Trade/>
     },
     {
 		path:'/',

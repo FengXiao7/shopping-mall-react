@@ -2,6 +2,7 @@
 import axios from "axios";
 import nprogress from "nprogress"
 import {getUUID} from '@/utils/uuid'
+import {getToken} from '@/utils/token'
 import "nprogress/nprogress.css";
 
 
@@ -15,6 +16,9 @@ requests.interceptors.request.use((config)=>{
     nprogress.start()//进度条开始
     if(getUUID()){
         config.headers.userTempId=getUUID()
+    }
+    if(getToken()){
+        config.headers.token=getToken()
     }
     return config;
 },(error)=>{
