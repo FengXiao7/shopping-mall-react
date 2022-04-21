@@ -2,7 +2,7 @@ import classnames from 'classnames'
 import React, { useEffect, useRef, useState } from 'react';
 import style from './index.module.css'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { reqUserInfo,reqLogout } from '@/api'
+import { reqUserInfo, reqLogout } from '@/api'
 import PubSub from 'pubsub-js';
 import { getToken, clearToken } from '@/utils/token'
 
@@ -34,15 +34,15 @@ const Header = () => {
         navigate(url)
     }
     //退出登录
-    const logOut = async() => {
+    const logOut = async () => {
         let result = await reqLogout()
         console.log(result)
-        if(result.code===200){
+        if (result.code === 200) {
             clearToken()
             SetUserName('')
             navigate('/home')
         }
-        
+
     }
     //请求用户名
     const getUserName = async () => {
@@ -67,9 +67,9 @@ const Header = () => {
             PubSub.subscribe(clearKeyword)
         };
     }, []);
-    useEffect(()=>{
+    useEffect(() => {
         getUserName()
-    },[getToken()])
+    }, [getToken()])
     return (
         <div>
             <header className={style.header}>
@@ -95,7 +95,7 @@ const Header = () => {
 
                         </div>
                         <div className={style.typeList}>
-                            <a href="###">我的订单</a>
+                            <Link to="/center">我的订单</Link>
                             <Link to="/shopCart">我的购物车</Link>
                             <a href="###">我的尚品汇</a>
                             <a href="###">尚品汇会员</a>

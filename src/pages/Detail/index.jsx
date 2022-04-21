@@ -14,7 +14,7 @@ const Detail = () => {
     const navigate = useNavigate()
     const [goodsInfo, SetgoodsInfo] = useState({})
     //无用state,用于强制更新
-    const [conut, SetCount] = useState(0)
+    // const [conut, SetCount] = useState(0)
     //商品数目
     const [skuNum, SetSkuNum] = useState(1)
     const { categoryView, skuInfo, spuSaleAttrList, price } = goodsInfo
@@ -25,7 +25,8 @@ const Detail = () => {
                 item.isChecked = '0'
             })
             value.isChecked = '1'
-            SetCount(conut + 1)
+            // SetCount(conut + 1)
+            SetgoodsInfo({...goodsInfo})
         }
     }
     //将产品添加到购物车中,发请求

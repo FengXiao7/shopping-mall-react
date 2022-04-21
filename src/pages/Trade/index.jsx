@@ -1,13 +1,58 @@
 // 请确认安装了classnames
 import classnames from 'classnames'
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import {useNavigate} from 'react-router-dom'
 import style from './index.module.css'
-import { reqOrderInfo, reqAddressList } from '@/api'
+import { reqOrderInfo, reqAddressList, reqSubmitOrder } from '@/api'
 
 const Trade = () => {
+    //买家信息,非受控
+    const msgRef = useRef()
+    const navigate= useNavigate()
+    //商品交易信息
     const [OrederInfo, SetOrderInfo] = useState({})
+    //收件人信息
     const [addressList, SetAddressList] = useState([])
     const { detailArrayList, totalNum, totalAmount, tradeNo } = OrederInfo
+    //点击改变默认地址
+    const changeDefault = (address) => {
+        return () => {
+            addressList.forEach(a => {
+                a.isDefault = "0"
+            })
+            address.isDefault = "1"
+            SetAddressList([...addressList])
+        }
+    }
+    //发送订单请求,成功后收到订单号跳转至Pay组件
+    const submitOrder = async () => {
+        let address = addressList.find(a => {
+            return a.isDefault === "1"
+        })
+        let data = {
+            consignee: address?.consignee,//收件人
+            consigneeTel: address?.phoneNum,//电话
+            deliveryAddress: address?.fullAddress,//地址
+            paymentWay: "ONLINE", //支付方式
+            orderComment: msgRef.current.value, //买家的留言信息
+            orderDetailList: detailArrayList, //商品清单
+        }
+
+        try {
+            let result = await reqSubmitOrder(tradeNo, data)
+            if (result.code === 200) {
+                // console.log(result.data)
+                navigate(`/pay?orderId=${result.data}`)
+            } else if (result.code === 201) {
+                alert(result.message)
+            }
+        } catch (error) {
+            alert(error)
+        }
+
+    }
+
+    //首次挂载发请求
     useEffect(() => {
         const doAsyc = async () => {
             let result1 = await reqAddressList()
@@ -22,7 +67,7 @@ const Trade = () => {
         }
         doAsyc().catch(error => alert(error))
     }, [])
-    console.log(addressList)
+
     return (
         <div className={style['trade-container']}>
             <h3 className={style.title}>填写并核对订单信息</h3>
@@ -33,13 +78,14 @@ const Trade = () => {
                     addressList.map(address => {
                         return (
                             <div className={[style.address, "clearFix"].join(' ')} key={address.id}>
-                                <span className={classnames(style.username, style.selected)} selected={address.isDefault === "1"}>{address.consignee}</span>
-                                <p>
-                                    <span className={style.s1}>{ address.fullAddress }</span>
-                                    <span className={style.s2}>{ address.phoneNum }</span>
+                                <span className={[style.username, address.isDefault === "1" ? style.selected : null].join(" ")}>{address.consignee}</span>
+                                {/* 点击改变默认地址 */}
+                                <p onClick={changeDefault(address)}>
+                                    <span className={style.s1}>{address.fullAddress}</span>
+                                    <span className={style.s2}>{address.phoneNum}</span>
                                     {
-                                        address.isDefault === "1"&&
-                                    <span className={style.s3}>默认地址</span>
+                                        address.isDefault === "1" &&
+                                        <span className={style.s3}>默认地址</span>
                                     }
                                 </p>
                             </div>
@@ -92,7 +138,7 @@ const Trade = () => {
                 </div>
                 <div className={style.bbs}>
                     <h5>买家留言：</h5>
-                    <textarea placeholder="建议留言前先与商家沟通确认" className={style['remarks-cont']}></textarea>
+                    <textarea placeholder="建议留言前先与商家沟通确认" className={style['remarks-cont']} ref={msgRef}></textarea>
 
                 </div>
                 <div className={style.line}></div>
@@ -128,7 +174,7 @@ const Trade = () => {
                 </div>
             </div>
             <div className={[style.sub, "clearFix"].join(' ')}>
-                <a href="##" className={style.subBtn}>提交订单</a>
+                <a href="##" className={style.subBtn} onClick={submitOrder}>提交订单</a>
             </div>
         </div>
     );

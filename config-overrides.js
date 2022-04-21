@@ -1,9 +1,7 @@
-const {override,addDecoratorsLegacy,addWebpackAlias,disableEsLint} = require('customize-cra');
+const { override, addDecoratorsLegacy, addWebpackAlias, disableEsLint, fixBabelImports } = require('customize-cra');
 const path = require('path')
 module.exports = override(
   addDecoratorsLegacy(), // 装饰器支持
-
-
 
   // 添加路径别名
   // 注意：join和resolve的区别：
@@ -13,6 +11,20 @@ module.exports = override(
     "@": path.join(__dirname, 'src'),
     "@com": path.join(__dirname, 'src/components'),
     "@pag": path.join(__dirname, 'src/pages'),
-   }),
-   disableEsLint()
- )
+  }),
+  //把esLint关了
+  disableEsLint(),
+  //按需引入组件库
+  // ui框架按需加载
+  fixBabelImports('import', {
+    "libraryName": "antd",
+    "libraryDirectory": "es",
+    "style": "css" // style: true  会加载 less 文件
+  }),
+  // 如果有多个UI框架 注意在后面加一个唯一值标识, 比如下面的写法
+  // fixBabelImports('import', {
+  //   "libraryName": "antd",
+  //   "libraryDirectory": "es",
+  //   "style": "css" // style: true  会加载 less 文件
+  // }, 'antd'),
+)
