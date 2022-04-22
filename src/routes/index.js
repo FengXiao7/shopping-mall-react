@@ -1,78 +1,80 @@
-import Home from '@pag/Home'
-import Login from '@pag/Login'
-import Register from '@pag/Register'
-import Search from '@pag/Search'
-import Detail from '@pag/Detail'
-import AddCartSuccess from '@pag/AddCartSuccess'
-import ShopCart from '@pag/ShopCart'
-import Trade from '@pag/Trade'
-import Pay from '@pag/Pay'
-import PaySuccess from '@pag/PaySuccess'
-import Center from '@pag/Center'
-import MyOrder from '@pag/Center/MyOrder'
-import GroupOrder from '@pag/Center/GroupOrder'
+import { lazy, Suspense } from 'react'
 import { Navigate } from 'react-router-dom'
+// 懒加载
+const lazyLoad = (path) => {
+    const Comp = lazy(() => import(`@pag/${path}`))
+    return (
+        <Suspense fallback={
+            <>
+                <img src={"images/加载.gif"}
+                    style={{ display: 'block', width: '500px', height: '500px', margin: '0 auto' }}
+                    alt="懒加载的图都找不到吗？" />
+            </>}>
+            <Comp />
+        </Suspense>
+    )
+}
 
 const routes = [
     {
         path: '/home',
-        element: <Home />
+        element: lazyLoad('Home')
     },
     {
         path: '/login',
-        element: <Login />
+        element: lazyLoad('Login')
     },
     {
         path: '/register',
-        element: <Register />
+        element: lazyLoad('Register')
     },
     {
         path: '/search/:keyword',
-        element: <Search />
+        element: lazyLoad('Search')
     },
     {
         path: '/search',
-        element: <Search />
+        element: lazyLoad('Search')
     },
     {
         path: '/detail/:skuid',
-        element: <Detail />
+        element: lazyLoad('Detail')
     },
     {
         path: '/addCartSuccess',
-        element: <AddCartSuccess />
+        element: lazyLoad('AddCartSuccess')
     },
     {
         path: '/shopCart',
-        element: <ShopCart />
+        element: lazyLoad('ShopCart')
     },
     {
         path: '/trade',
-        element: <Trade />
+        element: lazyLoad('Trade')
     },
     {
         path: '/pay',
-        element: <Pay />
+        element: lazyLoad('Pay')
     },
     {
         path: '/paySuccess',
-        element: <PaySuccess />
+        element: lazyLoad('PaySuccess')
     },
     {
         path: '/center',
-        element: <Center />,
+        element: lazyLoad('Center'),
         children: [
             {
                 path: 'myOrder',
-                element: <MyOrder />
+                element: lazyLoad('Center/MyOrder')
             },
             {
                 path: 'groupOrder',
-                element: <GroupOrder />
+                element: lazyLoad('Center/GroupOrder')
             },
             {
                 path: '',
-                element: <Navigate to="/center/myOrder"/>
+                element: <Navigate to="/center/myOrder" />
             }
         ]
     },

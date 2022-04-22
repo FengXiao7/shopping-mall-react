@@ -8,11 +8,11 @@ const App = () => {
     const elements = useRoutes(routes)
     const {pathname} = useLocation()
     return (
-        <div>
+        <>
           <Header/>
           {elements}
           {pathname!=='/login'&&pathname!=='/register'&&<Footer/>}
-        </div>
+        </>
     );
 }
 

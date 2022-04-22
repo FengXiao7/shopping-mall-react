@@ -7,6 +7,7 @@ import TypeNav from '@com/TypeNav';
 import SearchSelector from './SearchSelector'
 import Pagination from '@com/Pagination'
 import PubSub from 'pubsub-js';
+import LazyLoad from 'react-lazyload';
 const Search = () => {
     //编程式路由导航，用于更新地址栏，自己跳自己
     const navigate = useNavigate()
@@ -270,8 +271,11 @@ const Search = () => {
                                                             <div className={style['list-wrap']}>
                                                                 <div className={style['p-img']}>
                                                                     <Link to={`/detail/${goods.id}`}>
+                                                                <LazyLoad placeholder={<img width="100%" height="100%" src={"images/加载.gif"} alt="logo"/>}>
                                                                         <img src={goods.defaultImg} />
+                                                                </LazyLoad>
                                                                     </Link>
+                                                                    
                                                                 </div>
                                                                 <div className={style.price}>
                                                                     <strong>

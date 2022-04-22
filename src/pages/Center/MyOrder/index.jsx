@@ -2,20 +2,28 @@ import classnames from 'classnames'
 import React, { useEffect, useState } from 'react';
 import style from '../index.module.css'
 import { reqMyOrderList } from '@/api'
+import { Pagination } from 'antd'
+import LazyLoad from 'react-lazyload'
 
 const MyOrder = () => {
+    //我的订单信息
     const [myOrderList, SetMyOrderList] = useState({})
-    useEffect(() => {
-        const doAsync = async () => {
-            let result = await reqMyOrderList(1, 3)
-            // console.log(result)
-            if (result.code === 200) {
-                SetMyOrderList(result.data)
+    //发请求获得我的订单信息
+    const getMyOrderList =async  (page = 1, limit = 3) => {
+            try {
+                let result = await reqMyOrderList(page, limit)
+                if (result.code === 200) {
+                    SetMyOrderList(result.data)
+                }
+            } catch (error) {
+                alert(error)
             }
-        }
-        doAsync().catch(error => alert(error))
+    }
+    //首次加载发一次请求
+    useEffect(() => {
+        getMyOrderList()
     }, [])
-    console.log(myOrderList)
+    
     return (
         // <!-- 右侧内容 -->
         <div className={style['order-right']}>
@@ -47,52 +55,55 @@ const MyOrder = () => {
                                     <thead>
                                         <tr>
                                             <th colSpan="5">
-                                                <span className={style.ordertitle}>2017-02-11 11:59　订单编号：7867473872181848 <span
+                                                <span className={style.ordertitle}>支付时间:{myOrder.createTime} 11:59　订单编号:{myOrder.outTradeNo} <span
                                                     className={classnames(style['pull-right'], style.delete)}>
                                                     <img src={require("../images/delete.png")} /></span></span>
                                             </th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td width="60%">
-                                                <div className={style.typographic}>
-                                                    <img src={require("../images/goods.png")} />
-                                                    <a href="#" className={style['block-text']}>包邮 正品玛姬儿压缩面膜无纺布纸膜100粒 送泡瓶面膜刷喷瓶 新款</a>
-                                                    <span>x1</span>
-                                                    <a href="#" className={style.service}>售后申请</a>
-                                                </div>
-                                            </td>
-                                            <td rowSpan="2" width="8%" className={style.center}>小丽</td>
-                                            <td rowSpan="2" width="13%" className={style.center}>
-                                                <ul className={style.unstyled}>
-                                                    <li>总金额¥138.00</li>
-                                                    <li>在线支付</li>
+                                        {
+                                            myOrder.orderDetailList.map((cart, index) => {
+                                                return (
+                                                    <tr key={cart.id}>
+                                                        <td width="60%">
+                                                            <div className={style.typographic}>
+                                                            <LazyLoad placeholder={<img width="100%" height="100%" src={"images/加载.gif"} alt="logo"/>}>
+                                                                <img src={cart.imgUrl} style={{ width: '100px', height: "100px" }} />
+                                                                </LazyLoad> 
+                                                                <a href="#" className={style['block-text']}>{cart.skuName}</a>
+                                                                <span>x{cart.skuNum}</span>
+                                                                <a href="#" className={style.service}>售后申请</a>
+                                                            </div>
+                                                        </td>
+                                                        {
+                                                            index === 0 &&
+                                                            <>
+                                                                <td rowSpan={myOrder.orderDetailList.length} width="8%" className={style.center}>{myOrder.consignee}</td>
+                                                                <td rowSpan={myOrder.orderDetailList.length} width="13%" className={style.center}>
+                                                                    <ul className={style.unstyled}>
+                                                                        <li>总金额￥{myOrder.totalAmount}</li>
+                                                                        <li>在线支付</li>
+                                                                    </ul>
+                                                                </td>
+                                                                <td rowSpan={myOrder.orderDetailList.length} width="8%" className={style.center}>
+                                                                    <a href="#" className={style.btn}>{myOrder.orderStatusName}</a>
+                                                                </td>
+                                                                <td rowSpan={myOrder.orderDetailList.length} width="13%" className={style.center}>
+                                                                    <ul className={style.unstyled}>
+                                                                        <li>
+                                                                            <a href="#">评价|晒单</a>
+                                                                        </li>
+                                                                    </ul>
+                                                                </td>
+                                                            </>
+                                                        }
 
-                                                </ul>
-                                            </td>
-                                            <td rowSpan="2" width="8%" className={style.center}>
-                                                <a href="#" className={style.btn}>已完成 </a>
-                                            </td>
-                                            <td rowSpan="2" width="13%" className={style.center}>
-                                                <ul className={style.unstyled}>
-                                                    <li>
-                                                        <a href="mycomment.html" target="_blank">评价|晒单</a>
-                                                    </li>
+                                                    </tr>
+                                                )
+                                            })
+                                        }
 
-                                                </ul>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td width="50%">
-                                                <div className={style.typographic}>
-                                                    <img src={require("../images/goods.png")} />
-                                                    <a href="#" className={style['block-text']}>包邮 正品玛姬儿压缩面膜无纺布纸膜100粒 送泡瓶面膜刷喷瓶 新款</a>
-                                                    <span>x1</span>
-                                                    <a href="#" className={style.service}>售后申请</a>
-                                                </div>
-                                            </td>
-                                        </tr>
                                     </tbody>
                                 </table>
                             )
@@ -103,6 +114,17 @@ const MyOrder = () => {
                 </div>
 
             </div>
+            {/* 分页器 */}
+            <Pagination
+            style={{textAlign:'center'}}
+                total={myOrderList.total}
+                showSizeChanger
+                showQuickJumper
+                showTotal={total => `共${total}条订单`}
+                pageSizeOptions={[3, 5, 7]}
+                defaultPageSize={3}
+                onChange={getMyOrderList}
+            />
             {/* <!--猜你喜欢--> */}
             <div className={style.like}>
                 <h4 className={style.kt}>猜你喜欢</h4>
