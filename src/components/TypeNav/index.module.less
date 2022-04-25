@@ -30,13 +30,22 @@
 
         .sort {
             position: absolute;
-            left: 0;
             top: 45px;
             width: 210px;
             height: 461px;
             position: absolute;
             background: #fafafa;
             z-index: 999;
+            animation: show .6s linear alternate;
+
+            @keyframes show {
+                0%{
+                    left:-500px
+                }
+                100%{
+                    left:0px
+                }
+            }
 
             .all-sort-list2 {
                 .item {

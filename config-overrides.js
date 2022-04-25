@@ -1,7 +1,7 @@
-const { override, addDecoratorsLegacy, addWebpackAlias, disableEsLint, fixBabelImports} = require('customize-cra');
+const { override,addWebpackAlias, disableEsLint, fixBabelImports,addLessLoader} = require('customize-cra');
 const path = require('path')
 module.exports = override(
-  addDecoratorsLegacy(), // 装饰器支持
+
 
   // 添加路径别名
   // 注意：join和resolve的区别：
@@ -21,4 +21,10 @@ module.exports = override(
     "libraryDirectory": "es",
     "style": "css" // style: true  会加载 less 文件
   }),
+  // addLessLoader({
+	// 	lessOptions:{
+	// 		javascriptEnabled: true,
+	// 		modifyVars: { '@primary-color': 'green' },
+	// 	}
+	// }),
 )

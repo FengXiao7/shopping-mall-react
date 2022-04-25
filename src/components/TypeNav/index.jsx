@@ -6,6 +6,7 @@ import { reqCategoryList } from '@/api'
 import 'animate.css'
 const TypeNav = () => {
     const [CategoryList, SetCategoryList] = useState([])
+    // 控制三级联动一上来是否展示
     const [isShow, SetIsShow] = useState(false)
     const navigate = useNavigate();
     const location = useLocation();
