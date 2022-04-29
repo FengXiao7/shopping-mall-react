@@ -4,7 +4,7 @@ module.exports = function(app) {
   app.use(
     '/api',
     createProxyMiddleware({
-      target: 'http://39.98.123.211',
+      target: 'http://gmall-h5-api.atguigu.cn',
       changeOrigin: true,
     })
   );

@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef} from 'react';
-import { useParams, useSearchParams, useNavigate,Link } from 'react-router-dom'
+import React, { useState, useEffect, useRef } from 'react';
+import { useParams, useSearchParams, useNavigate, Link } from 'react-router-dom'
 import { reqGetSearchInfo } from '@/api'
 import style from './index.module.css'
 import classnames from 'classnames'
@@ -54,7 +54,7 @@ const Search = () => {
             case 'keyword':
                 return () => {
                     //把参数改一下再跳转，这样就可以发请求了。顺便清除一下header组件搜索框里的关键字
-                    PubSub.publish('clearKeyword',null)
+                    PubSub.publish('clearKeyword', null)
                     if (NewSearchParams.current.categoryName) {
                         let url = `/search?categoryname=${NewSearchParams.current.categoryName}&`
                         if (NewSearchParams.current.category1Id) {
@@ -269,14 +269,19 @@ const Search = () => {
                                                     return (
                                                         <li className={style['yui3-u-1-5']} key={goods.id}>
                                                             <div className={style['list-wrap']}>
-                                                                <div className={style['p-img']}>
-                                                                    <Link to={`/detail/${goods.id}`}>
-                                                                <LazyLoad placeholder={<img width="100%" height="100%" src={"images/加载.gif"} alt="logo"/>}>
-                                                                        <img src={goods.defaultImg} />
-                                                                </LazyLoad>
-                                                                    </Link>
-                                                                    
-                                                                </div>
+
+                                                                    <LazyLoad placeholder={<img width="100%" height="100%" src={"images/加载.gif"} alt="logo" />}>
+                                                                        <Link to={`/detail/${goods.id}`}>
+                                                                            <div className={style.card}>
+                                                                                <div className={style['card-cover']}
+                                                                                    style={{backgroundImage: `url(${goods.defaultImg})`}}
+                                                                                >
+
+                                                                                </div>
+                                                                            </div>
+                                                                        </Link>
+                                                                    </LazyLoad>
+                                                                
                                                                 <div className={style.price}>
                                                                     <strong>
                                                                         <em>¥</em>

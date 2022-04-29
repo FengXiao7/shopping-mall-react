@@ -630,3 +630,10 @@ const routes = [
 
 我看网上大多数都是封装下Route,因为我用的是useRoutes引入路由表的方式，所以不太可能用这种方法。所以到底该咋办呀？
 
+# 补充：
+
+## 1.换了下接口地址，以前的不能用了。
+
+## 2.高光立体壁画式卡片悬停特效
+
+<img src="https://picture-feng.oss-cn-chengdu.aliyuncs.com/img/142.gif" style="zoom: 100%"></img>
