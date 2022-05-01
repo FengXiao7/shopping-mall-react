@@ -1,12 +1,14 @@
 import classnames from 'classnames'
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import style from './index.module.css'
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form, Field } from 'formik';
 import { Link,useNavigate } from 'react-router-dom';
 import { reqUserLogin } from '@/api'
 import {setToken} from '@/utils/token'
+
 const Login = () => {
     const navigate = useNavigate()
+
     return (
         <>
             {/* <!-- 登录 --> */}

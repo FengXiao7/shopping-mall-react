@@ -4,11 +4,13 @@ import React, { useEffect, useState, useRef } from 'react';
 import {useNavigate} from 'react-router-dom'
 import style from './index.module.css'
 import { reqOrderInfo, reqAddressList, reqSubmitOrder } from '@/api'
+import {getToken} from '../../utils/token'
+import {message} from 'antd'
 
 const Trade = () => {
+    const navigate= useNavigate()
     //买家信息,非受控
     const msgRef = useRef()
-    const navigate= useNavigate()
     //商品交易信息
     const [OrederInfo, SetOrderInfo] = useState({})
     //收件人信息
@@ -54,6 +56,11 @@ const Trade = () => {
 
     //首次挂载发请求
     useEffect(() => {
+        if(!getToken()){
+            message.warning('请登录!')
+            navigate('/login')
+           
+        }
         const doAsyc = async () => {
             let result1 = await reqAddressList()
             let result2 = await reqOrderInfo()

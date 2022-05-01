@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react'
 import { Navigate } from 'react-router-dom'
+import {getToken} from '../utils/token'
 // 懒加载
 const lazyLoad = (path) => {
     const Comp = lazy(() => import(`@pag/${path}`))
@@ -22,7 +23,8 @@ const routes = [
     },
     {
         path: '/login',
-        element: lazyLoad('Login')
+        // 已经登录还想登录(通过地址栏输入可以做到)，跳到首页
+        element: getToken()?<Navigate to="/home"/>:lazyLoad('Login')
     },
     {
         path: '/register',
@@ -62,7 +64,7 @@ const routes = [
     },
     {
         path: '/center',
-        element: lazyLoad('Center'),
+        element: getToken()?lazyLoad('Center'):lazyLoad('Login'),
         children: [
             {
                 path: 'myOrder',

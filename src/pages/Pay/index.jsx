@@ -5,6 +5,8 @@ import style from './index.module.css'
 import { reqPayInfo,reqPayStatus } from '@/api'
 import { Modal,message } from 'antd'
 import QRCode from 'qrcode'
+import {getToken} from '../../utils/token'
+
 
 const Pay = () => {
     //里面装一个计时器,用于不断向后台发送请求确认是否支付成功
@@ -57,6 +59,10 @@ const Pay = () => {
     };
     //发送请求获取支付信息
     useEffect(() => {
+        if(!getToken()){
+            message.warning('请登录!')
+            navigate('/login')      
+        }
         const doAsyc = async () => {
             let result = await reqPayInfo(searchParams.get('orderId'))
             if (result.code === 200) {
