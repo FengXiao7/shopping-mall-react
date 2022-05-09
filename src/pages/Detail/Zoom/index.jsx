@@ -25,7 +25,7 @@ const Zoom = ({ imgList }) => {
         big.style.left = -2 * left + 'px'
         big.style.top = -2 * top + 'px'
     }
-
+    // 订阅BigImgIndex消息，接收大图索引。
     useEffect(() => {
         let BigImgIndex = PubSub.subscribe('BigImgIndex', (msg, index) => {
             SetIndex(index)
@@ -34,17 +34,19 @@ const Zoom = ({ imgList }) => {
             PubSub.unsubscribe(BigImgIndex)
         }
     }, [])
-
+    // console.log(imgList,index,'Zoom')
     return (
-        <div className={style['spec-preview']}>
-            <img src={imgList[index].imgUrl} />
+        imgList.length > 0 &&
+        < div className={style['spec-preview']} >
+            <img src={imgList[index].imgUrl} alt="找不到图片"/>
             <div className={style.event} onMouseMove={handler}></div>
             <div className={style.big}  >
-                <img src={imgList[index].imgUrl}  ref={bigRef}/>
+                <img src={imgList[index].imgUrl} ref={bigRef} />
             </div>
             {/* <!-- 遮罩层 --> */}
             <div className={style.mask} ref={maskRef}></div>
         </div >
+
     );
 }
 

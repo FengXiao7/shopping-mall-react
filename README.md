@@ -1,50 +1,20 @@
 # 说明：
 
+
+
 这个项目是用react全家桶重构之前用vue2写的购物网站
 
 项目地址：https://gitee.com/feng-chengxiang/shopping-mall-vue.git
 
 我在这里不会记录一些重复的笔记，因为之前的项目已经写的十分详尽了。
 
-具体工具：(还不是最终版，可能有删减)
 
-```json
-"dependencies": {
-    "@babel/plugin-proposal-decorators": "^7.17.9",
-    "@testing-library/jest-dom": "^5.16.4",
-    "@testing-library/react": "^13.0.1",
-    "@testing-library/user-event": "^13.5.0",
-    "axios": "^0.26.1",
-    "classnames": "^2.3.1",
-    "mockjs": "^1.1.0",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
-    "react-router-dom": "^6.3.0",
-    "react-scripts": "5.0.1",
-    "redux-devtools-extension": "^2.13.9",
-    "redux-thunk": "^2.4.1",
-    "swiper": "^8.1.0"
-  },
-```
-
-
-
-```json
-"devDependencies": {
-    "animate.css": "^4.1.1",
-    "customize-cra": "^1.0.0",
-    "nprogress": "^0.2.0",
-    "react-app-rewired": "^2.2.1",
-    "react-redux": "^7.2.8",
-    "react-transition-group": "^4.4.2"
-  }
-```
 
 
 
 ## 1.useEffect发送请求
 
-组件挂载时会发送请求，怎么做到只发送一次请求，切换路由组件又回来后，不再发送请求？
+组件挂载时会发送请求，怎么做到只发送一次请求，切换路由组件又回来后，不再发送请求？是只能用状态管理工具了吧
 
 ```jsx
 const [CategoryList,SetCategoryList] = useState([])
@@ -61,7 +31,7 @@ const [CategoryList,SetCategoryList] = useState([])
     // console.log(CategoryList,'List')
 ```
 
-## 2.React.memo,useCallBack,useMemo，useRef
+## 2.React.memo,useCallBack,useMemo
 
 之前学的都好好的，到实战还真不知道具体的使用场景，还需要多练练啊。我打算把所有业务逻辑写完后，再来系统地看看那些地方可以优化。
 
@@ -415,7 +385,7 @@ vue写法
 
 ## 2.后台数据
 
-只要涉及到后台，就会有一些奇怪的数据喔。有时候你点图片可以发请求，发请求也成功了，数据也得到了，但是数据键都有，就是没值，全为null或者0.就很坑
+只要涉及到后台，就会有一些奇怪的数据喔。有时候你点图片可以发请求，发请求也成功了，数据也得到了，但是数据键都有，就是没值，全为null或者0.就很坑。还有些情况是有商品数据，没有图片数据，也要注意这个坑。所以在你看见购物车详情组件显示有误时，就是我没考虑到后台数据的不完整性。后台不要添加些奇怪的数据啊!
 
 ## 3.点击商品属性，不改变样式的问题
 
@@ -462,6 +432,14 @@ vue写法
 我想使用onBlur失去焦点后再发请求，但是直接报错。因为value必须要和onChange搭配，不然无法输入。
 
 暂时没找到啥好的解决方案。而且由于添加了500ms的节流，用户输入会有延迟。
+
+
+
+**改变商品数目真的需要发请求吗？**
+
+我感觉可以最后点结算再发请求，但这样就需要使用非受控组件。但这样与数量有关的数据显示，就不能实时更新了。
+
+只能说更加细化地限制用户输入input动作了。
 
 ## 3.删除商品
 
@@ -644,7 +622,7 @@ const routes = [
 
 这个可以做到，只是控制颗粒度我感觉没有以前的vue项目细。
 
-两个简单方案：
+三个简单方案：
 
 ### 方案1：
 
@@ -662,9 +640,7 @@ const routes = [
 
 我如果想在里面再加一些逻辑呢？比如有个提示框啥的，这个到底该咋写呀？
 
-这样写还有个问题，就是会重复判断getToken()，这都是小问题。
-
-但还有一些权限控制是特定页面向特定页面跳转才会有限制，我通过什么方法可以拿到from和to呢？
+还有一些权限控制是特定页面向特定页面跳转才会有限制，我通过什么方法可以拿到from和to呢？
 
 只能说用的版本太新了，网上也没找到啥好办法。
 
@@ -688,6 +664,40 @@ const routes = [
 
 而且因为写在useEffect,且依赖项为空数组的情况下。不就需要先render一次，再跳转吗？这还算路由拦截吗？虽然也能实现功能
 
+### 方案3：
 
+我真傻，真的。直接封装组件就行了嘛。
 
-我想的两个方案都不是很好，但好歹能实现，我两种方案都用上了。
+**注意不能封装成函数，因为这样就只有第一次会生效了。**
+
+就像这样：
+
+路由表使用
+
+```js
+{
+        path: '/login',
+        element: <RouterGuard path="login">{lazyLoad('Login')}</RouterGuard>
+    },
+```
+
+封装成组件
+
+```js
+function RouterGuard({path,children}){
+    // 登录的情况下又登录
+    if(path==='login'){
+        if(getToken()){
+            alert('你已经登录!')
+            // 用antD组件会报错！
+            // message.warning('你已经登录!')
+            return <Navigate to="/home" />
+        }
+        return children
+    }
+}
+```
+
+用antD组件message会报错！纯函数的原因，alert就没问题
+
+![image-20220507022638551](C:\Users\FengXiao7\AppData\Roaming\Typora\typora-user-images\image-20220507022638551.png)

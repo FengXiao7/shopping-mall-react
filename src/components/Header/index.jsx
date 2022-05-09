@@ -16,10 +16,12 @@ const Header = () => {
     //整理并发送参数至search组件
     const goSearch = () => {
         let keyword = myRef.current.value
+        // 空参数不发请求
         if (!keyword) {
             return
         }
         let url = `search/${keyword}`
+        // 看一下有没有search参数
         if (searchParams.get('categoryname')) {
             url += `?categoryname=${searchParams.get('categoryname')}`
             if (searchParams.get('category1Id')) {

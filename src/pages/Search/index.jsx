@@ -35,8 +35,8 @@ const Search = () => {
     //发送请求
     const getData = async () => {
         let result = await reqGetSearchInfo(NewSearchParams.current)
-        console.log('请求')
         if (result.code === 200) {
+            // console.log('请求')
             SetSearchInfo(result.data)
         } else {
             return Promise.reject(new Error('faile'))
@@ -164,8 +164,6 @@ const Search = () => {
         ])
     //从返回的数据拆成三个数组和其他一些分页需要的数据
     const { trademarkList, attrsList, goodsList, total, pageSize, pageNo, totalPages } = SearchInfo
-
-
 
     return (
         <>

@@ -51,12 +51,13 @@ const Detail = () => {
         window.scrollTo(0,0)
         doAsync().catch((error) => console.log(error.msg))
     }, [params.skuid])
+    // console.log(skuInfo)
     return (
         <div className={style.detail}>
             <TypeNav />
             {/* <!-- 主要内容区域 --> */}
             {
-                JSON.stringify(goodsInfo) === '{}' || categoryView === null ? <h1 style={{ textAlign: 'center', color: '#eb0d36' }}>暂无该商品信息！！！请等待！！！</h1> :
+                JSON.stringify(goodsInfo) === '{}' || categoryView === undefined || categoryView ===null ? <h1 style={{ textAlign: 'center', color: '#eb0d36' }}>暂无该商品信息！！！请等待！！！</h1> :
                     <section className={style.con}>
                         {/* <!-- 导航路径区域 --> */}
                         <div className={style.conPoin}>
@@ -221,7 +222,7 @@ const Detail = () => {
                                 <li>
                                     <div className={style['list-wrap']}>
                                         <div className={style['p-img']}>
-                                            <img src={require("./images/part01.png")} />
+                                            <img src={require("./images/part01.png")} alt="找不到图片"/>
                                         </div>
                                         <div className={style.attr}>Apple苹果iPhone 6s (A1699) </div>
                                         <div className={style.price}>
@@ -236,7 +237,7 @@ const Detail = () => {
                                 <li>
                                     <div className={style['list-wrap']}>
                                         <div className={style['p-img']}>
-                                            <img src={require("./images/part02.png")} />
+                                            <img src={require("./images/part02.png")} alt="找不到图片"/>
                                         </div>
                                         <div className={style.attr}>
                                             <em>Apple苹果iPhone 6s (A1699)</em>
@@ -255,7 +256,7 @@ const Detail = () => {
                                 <li>
                                     <div className={style['list-wrap']}>
                                         <div className={style['p-img']}>
-                                            <img src={require("./images/part03.png")} />
+                                            <img src={require("./images/part03.png")} alt="找不到图片"/>
                                         </div>
                                         <div className={style.attr}>
                                             <em>Apple苹果iPhone 6s (A1699)</em>
@@ -274,7 +275,7 @@ const Detail = () => {
                                 <li>
                                     <div className={style['list-wrap']}>
                                         <div className={style['p-img']}>
-                                            <img src={require("./images/part01.png")} />
+                                            <img src={require("./images/part01.png")} alt="找不到图片"/>
                                         </div>
                                         <div className={style.attr}>
                                             <em>Apple苹果iPhone 6s (A1699)</em>
@@ -293,7 +294,7 @@ const Detail = () => {
                                 <li>
                                     <div className={style['list-wrap']}>
                                         <div className={style['p-img']}>
-                                            <img src={require("./images/part03.png")} />
+                                            <img src={require("./images/part03.png")} alt="找不到图片"/>
                                         </div>
                                         <div className={style.attr}>
                                             <em>Apple苹果iPhone 6s (A1699)</em>
@@ -321,13 +322,13 @@ const Detail = () => {
                         <h4 className={style.kt}>选择搭配</h4>
                         <div className={style['good-suits']}>
                             <div className={style.master}>
-                                <img src={require("./images/l-m01.png")} />
+                                <img src={require("./images/l-m01.png")} alt="找不到图片"/>
                                 <p>￥5299</p>
                                 <i>+</i>
                             </div>
                             <ul className={style.suits}>
                                 <li className={style.suitsItem}>
-                                    <img src={require("./images/dp01.png")} />
+                                    <img src={require("./images/dp01.png")} alt="找不到图片"/>
                                     <p>Feless费勒斯VR</p>
                                     <label>
                                         <input type="checkbox" />
@@ -335,7 +336,7 @@ const Detail = () => {
                                     </label>
                                 </li>
                                 <li className={style.suitsItem}>
-                                    <img src={require("./images/dp02.png")} />
+                                    <img src={require("./images/dp02.png")} alt="找不到图片"/>
                                     <p>Feless费勒斯VR</p>
                                     <label>
                                         <input type="checkbox" />
@@ -343,7 +344,7 @@ const Detail = () => {
                                     </label>
                                 </li>
                                 <li className={style.suitsItem}>
-                                    <img src={require("./images/dp03.png")} />
+                                    <img src={require("./images/dp03.png")} alt="找不到图片"/>
                                     <p>Feless费勒斯VR</p>
                                     <label>
                                         <input type="checkbox" />
@@ -351,7 +352,7 @@ const Detail = () => {
                                     </label>
                                 </li>
                                 <li className={style.suitsItem}>
-                                    <img src={require("./images/dp04.png")} />
+                                    <img src={require("./images/dp04.png")} alt="找不到图片"/>
                                     <p>Feless费勒斯VR</p>
                                     <label>
                                         <input type="checkbox" />
@@ -416,9 +417,9 @@ const Detail = () => {
                                     <li>机身内存：64GB</li>
                                 </ul>
                                 <div className={style['intro-detail']}>
-                                    <img src={require("./images/intro01.png")} />
-                                    <img src={require("./images/intro02.png")} />
-                                    <img src={require("./images/intro03.png")} />
+                                    <img src={require("./images/intro01.png")} alt="找不到图片"/>
+                                    <img src={require("./images/intro02.png")} alt="找不到图片"/>
+                                    <img src={require("./images/intro03.png")} alt="找不到图片"/>
                                 </div>
                             </div>
                             <div id="two" className={style['tab-pane']}>

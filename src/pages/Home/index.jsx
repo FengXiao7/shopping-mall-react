@@ -9,7 +9,7 @@ import Brand from './Brand';
 import Floor from './Floor';
 const Home = () => {
     const [FloorList, SetFloorList] = useState([])
-
+    //请求FloorList
     useEffect(() => {
         const doAsync = async () => {
             let result = await reqGetFloorList()

@@ -5,13 +5,15 @@ import style from './index.module.css'
 import { reqCategoryList } from '@/api'
 import 'animate.css'
 const TypeNav = () => {
+    //三级联动数据
     const [CategoryList, SetCategoryList] = useState([])
     // 控制三级联动一上来是否展示
     const [isShow, SetIsShow] = useState(false)
     const navigate = useNavigate();
     const location = useLocation();
     const params = useParams()
-    
+    //home组件展示三级联动
+    //发请求
     useEffect(() => {
         // console.log("hhh")
         // 只有home组件一上来才展示三级联动
@@ -27,6 +29,7 @@ const TypeNav = () => {
         }
         doAsync().catch((error) => console.log(error.msg))
     }, [])
+    // 下面两个函数控制鼠标移除和移入是否展示三级联动
     const mouseLeave = () => {
         if (location.pathname !== '/home') {
             SetIsShow(false)
@@ -42,11 +45,13 @@ const TypeNav = () => {
         event.preventDefault()
         let element = event.target
         let url = `/search`
+        // 获取自定义属性
         let { categoryname, categoryid_1, categoryid_2, categoryid_3 } = element.dataset;
-
+        //看下有没有keyword
         if(JSON.stringify(params) !== '{}' && typeof params.keyword!=='undefined'){
             url+=`/${params.keyword}`
         }
+        //点击空白区域不会发请求
         if (categoryname) {
             if (categoryid_1) {
                 url += `?categoryname=${categoryname}&category1Id=${categoryid_1}`
@@ -55,9 +60,9 @@ const TypeNav = () => {
             } else {
                 url += `?categoryname=${categoryname}&category3Id=${categoryid_3}`
             }
+            // console.log(url,'TypeNav')
+            navigate(url)
         }
-        // console.log(url,'TypeNav')
-        navigate(url)
     }
 
     return (

@@ -1,16 +1,9 @@
-import React,{useEffect} from 'react';
+import React from 'react';
 import style from './index.module.css'
-import {Link,useNavigate} from 'react-router-dom'
-import { message } from 'antd'
-import {getToken} from '../../utils/token'
+import {Link} from 'react-router-dom'
+
 const PaySuccess = () => {
-    const navigate = useNavigate()
-    useEffect(()=>{
-        if(!getToken()){
-            message.warning('请登录!')
-            navigate('/login')   
-        }
-    },[])
+
     return (
         <div className={style.paysuccess}>
 

@@ -1,6 +1,5 @@
 
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
-import { useEffect } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react';
 import PubSub from 'pubsub-js'
 import 'swiper/css';
@@ -15,9 +14,8 @@ const ImageList = ({ imgList }) => {
       PubSub.publish('BigImgIndex', index)
     }
   }
-
   return (
-    imgList &&
+    imgList && imgList.length>0&&
     <Swiper
       modules={[Navigation, Pagination, Scrollbar, A11y]}
       //   spaceBetween={50}

@@ -1,8 +1,6 @@
 const { override,addWebpackAlias, disableEsLint, fixBabelImports,addLessLoader} = require('customize-cra');
 const path = require('path')
 module.exports = override(
-
-
   // 添加路径别名
   // 注意：join和resolve的区别：
   // 1、join是把路径拼接

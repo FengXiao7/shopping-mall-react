@@ -56,11 +56,6 @@ const Trade = () => {
 
     //首次挂载发请求
     useEffect(() => {
-        if(!getToken()){
-            message.warning('请登录!')
-            navigate('/login')
-           
-        }
         const doAsyc = async () => {
             let result1 = await reqAddressList()
             let result2 = await reqOrderInfo()
