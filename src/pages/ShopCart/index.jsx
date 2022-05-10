@@ -3,7 +3,6 @@ import style from './index.module.css'
 import { reqGetCartList, reqAddOrUpdateShopCart, reqDeleteCart, reqUpdateChartChecked } from '@/api'
 import throttle from "lodash/throttle";
 import { useNavigate } from 'react-router-dom';
-import { getToken } from '@/utils/token'
 import { message } from 'antd'
 const ShopCart = () => {
     const [CartList, SetCartList] = useState([])

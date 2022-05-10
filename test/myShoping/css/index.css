@@ -1,0 +1,200 @@
+.main {
+  position: relative;
+  margin-top: 8px;
+  margin-left: 218px;
+  width: 986px;
+  height: 455px;
+}
+.main .arrow-l,
+.main .arrow-r {
+  position: absolute;
+  top: 50%;
+  margin-top: -20px;
+  width: 24px;
+  height: 40px;
+  background: rgba(0, 0, 0, 0.3);
+  text-align: center;
+  line-height: 40px;
+  color: #fff;
+  font-family: 'icomoon';
+  font-size: 18px;
+  z-index: 2;
+}
+.main .arrow-r {
+  right: 265px;
+}
+.main .circles {
+  position: absolute;
+  height: 20px;
+  left: 37%;
+  bottom: 15px;
+  margin-left: -35.5px;
+  border-radius: 7px;
+}
+.main .circles li {
+  float: left;
+  height: 15px;
+  width: 15px;
+  margin: 5px;
+  /* line-height: 9px; */
+  background-color: #ffffff;
+  border-radius: 50%;
+}
+.main .circles .selected {
+  background-color: #f54e00;
+}
+.main .bigImgList {
+  float: left;
+  position: relative;
+  width: 721px;
+  height: 100%;
+  overflow: hidden;
+}
+.main .bigImgList ul {
+  position: absolute;
+  top: 0;
+  width: 600%;
+}
+.main .bigImgList ul li {
+  float: left;
+}
+.main .newFlash {
+  float: right;
+  height: 100%;
+  width: 258px;
+  border: 1px solid #e8e8e7;
+}
+.main .newFlash .news {
+  border-bottom: 1px solid #e8e8e7;
+}
+.main .newFlash .news .newsTop {
+  height: 33px;
+  font-size: 14px;
+  line-height: 33px;
+  margin-left: 10px;
+}
+.main .newFlash .news .newsTop p {
+  float: right;
+}
+.main .newFlash .news .newsList {
+  height: 130px;
+  margin-left: 15px;
+}
+.main .newFlash .news .newsList ul li {
+  height: 24px;
+  line-height: 24px;
+}
+.main .newFlash .lifeService {
+  height: 209px;
+}
+.main .newFlash .lifeService ul {
+  width: 105%;
+}
+.main .newFlash .lifeService ul li {
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: space-around;
+  align-items: center;
+  float: left;
+  width: 63px;
+  height: 70px;
+  border-right: 1px solid #e8e8e7;
+  border-bottom: 1px solid #e8e8e7;
+}
+.main .newFlash .lifeService ul li:nth-child(4n) {
+  width: 65px;
+  border-right: 0;
+}
+.main .newFlash .lifeService ul li i {
+  display: inline-block;
+  width: 26px;
+  height: 26px;
+  background: url('../images/icons.png') no-repeat -16px -15px;
+}
+.main .newFlash .specialOffer {
+  height: 250px;
+  margin-top: 5px;
+  background: url("../upload/bargain.png") no-repeat;
+}
+.recommend {
+  margin-top: 5px;
+  height: 164px;
+  background-color: #ebebeb;
+}
+.recommend .recom_hd {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 205px;
+  height: 100%;
+  float: left;
+  background-color: #5c5251;
+}
+.recommend .recom_bd ul {
+  width: 105%;
+}
+.recommend .recom_bd ul li {
+  float: left;
+  border-right: 1px solid #dddddd;
+}
+.recommend .recom_bd ul li:nth-child(n+3) {
+  border-right: 0;
+}
+.floor .box_hd {
+  position: relative;
+  height: 32px;
+  color: #c81623;
+  border-bottom: 2px solid #c81623;
+}
+.floor .box_hd .tab_list {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+.floor .box_hd .tab_list ul li {
+  float: left;
+  margin-left: 15px;
+}
+.floor .box_hd .tab_list ul li .style_red {
+  color: #c81623;
+}
+.floor .box_bd {
+  height: 365px;
+  width: 105%;
+}
+.floor .box_bd .tab_list_items div {
+  float: left;
+}
+.floor .box_bd .tab_list_items .col_200_1 {
+  width: 210px;
+  text-align: center;
+}
+.floor .box_bd .tab_list_items .col_200_1 ul {
+  margin-left: 15px;
+}
+.floor .box_bd .tab_list_items .col_200_1 ul li {
+  float: left;
+  width: 87px;
+  height: 33px;
+  line-height: 33px;
+  margin-right: 5px;
+  text-align: center;
+  border-bottom: 1px solid #ebebeb;
+}
+.floor .box_bd .tab_list_items .col_329_2 {
+  width: 329px;
+}
+.floor .box_bd .tab_list_items .col_219_5,
+.floor .box_bd .tab_list_items .col_219_3 {
+  width: 219px;
+}
+.floor .box_bd .tab_list_items .col_219_5 .bb,
+.floor .box_bd .tab_list_items .col_219_3 .bb {
+  display: block;
+  border-bottom: 1px solid #ebebeb;
+}
+.floor .box_bd .tab_list_items .col_220_4 {
+  width: 220px;
+  border-left: 1px solid #ebebeb;
+  border-right: 1px solid #ebebeb;
+}
