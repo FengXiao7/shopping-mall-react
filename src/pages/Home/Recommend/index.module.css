@@ -4,6 +4,7 @@
 }
 .today-recommend .py-container .recommend {
   height: 165px;
+  width: 100%;
   background-color: #eaeaea;
   margin: 10px 0;
   display: flex;

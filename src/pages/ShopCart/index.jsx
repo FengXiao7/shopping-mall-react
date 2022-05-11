@@ -11,11 +11,17 @@ const ShopCart = () => {
     //获取购物车列表
     const getCartList = async () => {
         let result = await reqGetCartList()
-        if (result.code === 200 && result.data.length > 0) {
-            console.log('请求')
-            SetCartList(result.data[0].cartInfoList)
+
+        if (result.code === 200 ) {
+            // 删除完购物车后，把CartList重新置空
+            if(result.data.length===0){
+                SetCartList([])
+            }else{
+                SetCartList(result.data[0].cartInfoList)
+            }
         }
     }
+
     //购物车商品总价
     const totalPrice = () => {
         let total = 0;
@@ -109,6 +115,7 @@ const ShopCart = () => {
     //改变商品勾选情况
     const updateChecked = async (skuId, event) => {
         let checked = event.target.checked ? "1" : "0"
+
         let result = await reqUpdateChartChecked(skuId, checked)
         if (result.code == 200) {
             getCartList()
@@ -132,7 +139,7 @@ const ShopCart = () => {
         getCartList()
 
     }
-
+    
     useEffect(() => {
         getCartList()
     }, [])
@@ -157,8 +164,8 @@ const ShopCart = () => {
                                 return (
                                     <ul className={style['cart-list']} key={cartInfo.skuId}>
                                         <li className={style['cart-list-con1']}>
-                                            <input type="checkbox" name="chk_list" defaultChecked={cartInfo.isChecked === 1}
-                                                onClick={event => updateChecked(cartInfo.skuId, event)}
+                                            <input type="checkbox" name="chk_list" checked={cartInfo.isChecked === 1}
+                                                onChange={event => updateChecked(cartInfo.skuId, event)}
                                             />
                                         </li>
                                         <li className={style['cart-list-con2']}>
@@ -192,7 +199,7 @@ const ShopCart = () => {
             </div>
             <div className={style['cart-tool']}>
                 <div className={style['select-all']}>
-                    <input className={style.chooseAll} type="checkbox" onClick={updateAllCartIsChecked} defaultChecked={isAllChecked()} />
+                    <input className={style.chooseAll} type="checkbox" onChange={updateAllCartIsChecked} checked={isAllChecked()} />
                     <span>全选</span>
                 </div>
                 <div className={style.option}>

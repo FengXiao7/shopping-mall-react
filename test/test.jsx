@@ -3,20 +3,25 @@ import style from './index.module.css'
 import { reqGetCartList, reqAddOrUpdateShopCart, reqDeleteCart, reqUpdateChartChecked } from '@/api'
 import throttle from "lodash/throttle";
 import { useNavigate } from 'react-router-dom';
-import { getToken } from '@/utils/token'
-import {message} from 'antd'
+import { message } from 'antd'
 const ShopCart = () => {
     const [CartList, SetCartList] = useState([])
-  
+
     const navigate = useNavigate()
     //获取购物车列表
     const getCartList = async () => {
         let result = await reqGetCartList()
-        if (result.code === 200 && result.data.length > 0) {
-            // console.log('请求')
-            SetCartList(result.data[0].cartInfoList)
+
+        if (result.code === 200 ) {
+            // 删除完购物车后，把CartList重新置空
+            if(result.data.length===0){
+                SetCartList([])
+            }else{
+                SetCartList(result.data[0].cartInfoList)
+            }
         }
     }
+
     //购物车商品总价
     const totalPrice = () => {
         let total = 0;
@@ -46,7 +51,7 @@ const ShopCart = () => {
                 break;
             case "minus":
                 if (cartInfo.skuNum <= 1) {
-                    
+
                     flag = false;
                 }
                 break;
@@ -55,10 +60,10 @@ const ShopCart = () => {
                     //负数和非数字不发请求
                     message.warning('请输入正确格式！')
                     flag = false;
-                }else if(disNum>100){
+                } else if (disNum > 100) {
                     message.warning('最大支持100部商品')
-                    flag=false
-                }else {
+                    flag = false
+                } else {
                     //要考虑小数
                     disNum = parseInt(disNum) - cartInfo.skuNum;
                 }
@@ -73,7 +78,7 @@ const ShopCart = () => {
                 if (result.code !== 200) {
                     return Promise.reject(new Error('faile'))
                 }
-            
+
                 getCartList()
             }
         } catch (error) {
@@ -82,15 +87,17 @@ const ShopCart = () => {
     }, 500)
 
     //删除购物车商品
-    const deleteCart = (skuId) => {
-        return async () => {
-            try {
-                await reqDeleteCart(skuId)
+    const deleteCart = async (skuId) => {
+
+        try {
+            let result = await reqDeleteCart(skuId)
+            if(result.code==200){
                 getCartList()
-            } catch (error) {
-                alert(error.message)
             }
+        } catch (error) {
+            alert(error.message)
         }
+
     }
     //删除所选商品
     const deleteAllselected = async () => {
@@ -131,7 +138,7 @@ const ShopCart = () => {
         getCartList()
 
     }
-
+    
     useEffect(() => {
         getCartList()
     }, [])
@@ -170,8 +177,8 @@ const ShopCart = () => {
                                         <li className={style['cart-list-con5']}>
                                             <a href="#" className={style.mins} onClick={() => hander('minus', cartInfo, -1)}>-</a>
                                             <input autoComplete="off" type="text" minnum="1" className={style.itxt} value={cartInfo.skuNum}
-                                                onChange={event=>hander('change', cartInfo, event.target.value)}
-                                                // onBlur={event=>hander('change', cartInfo, event.target.value)}
+                                                onChange={event => hander('change', cartInfo, event.target.value)}
+                                            // onBlur={event=>hander('change', cartInfo, event.target.value)}
                                             />
                                             <a href="#" className={style.plus} onClick={() => hander('plus', cartInfo, 1)}>+</a>
                                         </li>
@@ -179,7 +186,7 @@ const ShopCart = () => {
                                             <span className={style.sum}>{cartInfo.skuNum * cartInfo.skuPrice}</span>
                                         </li>
                                         <li className={style['cart-list-con7']}>
-                                            <a href="#none" className={style.sindelet} onClick={deleteCart(cartInfo.skuId)}>删除</a>
+                                            <a href="#none" className={style.sindelet} onClick={() => deleteCart(cartInfo.skuId)}>删除</a>
                                         </li>
                                     </ul>
                                 )
@@ -207,7 +214,7 @@ const ShopCart = () => {
                         <i className={style.summoney}>{totalPrice()}</i>
                     </div>
                     <div className={style.sumbtn}>
-                        <a className={style['sum-btn']} onClick={()=>navigate('/trade')}>结算</a>
+                        <a className={style['sum-btn']} onClick={() => navigate('/trade')}>结算</a>
                     </div>
                 </div>
             </div>

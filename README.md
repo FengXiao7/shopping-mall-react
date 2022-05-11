@@ -105,7 +105,7 @@ img必须闭合引入src有要求
 
 ### checked：
 
-这个属性写成defaultChecked，代表非受控组价
+这个属性写成defaultChecked，代表非受控组件
 
 ## value:
 
@@ -701,3 +701,53 @@ function RouterGuard({path,children}){
 用antD组件message会报错！纯函数的原因，alert就没问题
 
 ![image-20220507022638551](C:\Users\FengXiao7\AppData\Roaming\Typora\typora-user-images\image-20220507022638551.png)
+
+## 4.购物车Bug：
+
+### 全选Bug
+
+这个很简单，是因为之前的input是非受控组件，改成受控组件，再把onClick改为onChange即可
+
+### 删除Bug：
+
+这个bug解决也很简单，当初也不知道怎么的，这个都没解决。
+
+我们删除对应商品后，会再去调用getCartList。
+
+如果已经是最后一个商品，删除以后再调用getCartList，虽然code为200.但是result.data.length已经为0了，根本
+
+不能SetCartList
+
+```js
+//获取购物车列表
+    const getCartList = async () => {
+        let result = await reqGetCartList()
+      
+        if (result.code === 200 && result.data.length > 0) {
+            SetCartList(result.data[0].cartInfoList)
+        }
+    }
+```
+
+改成下面这样就行了
+
+```js
+//获取购物车列表
+    const getCartList = async () => {
+        let result = await reqGetCartList()
+
+        if (result.code === 200 ) {
+            // 删除完购物车后，把CartList重新置空
+            if(result.data.length===0){
+                SetCartList([])
+            }else{
+                SetCartList(result.data[0].cartInfoList)
+            }
+        }
+    }
+```
+
+
+
+
+
