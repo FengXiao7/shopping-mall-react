@@ -9,6 +9,7 @@ module.exports = override(
     "@": path.join(__dirname, 'src'),
     "@com": path.join(__dirname, 'src/components'),
     "@pag": path.join(__dirname, 'src/pages'),
+    "@redux": path.join(__dirname, 'src/redux'),
   }),
   //把esLint关了
   disableEsLint(),

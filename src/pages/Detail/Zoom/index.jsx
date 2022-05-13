@@ -1,12 +1,13 @@
-import React, { useEffect, useState, useRef } from 'react';
-import PubSub from 'pubsub-js'
-import style from './index.module.css'
+import React, {  useRef } from 'react';
 
-const Zoom = ({ imgList }) => {
+import style from './index.module.css'
+import {connect} from 'react-redux'
+
+const Zoom = ({ imgList,BigImgIndex }) => {
     const bigRef = useRef()
     const maskRef = useRef()
-    const [index, SetIndex] = useState(0)
 
+    // 放大镜
     const handler = (event) => {
         let mask = maskRef.current
         let big = bigRef.current
@@ -25,23 +26,15 @@ const Zoom = ({ imgList }) => {
         big.style.left = -2 * left + 'px'
         big.style.top = -2 * top + 'px'
     }
-    // 订阅BigImgIndex消息，接收大图索引。
-    useEffect(() => {
-        let BigImgIndex = PubSub.subscribe('BigImgIndex', (msg, index) => {
-            SetIndex(index)
-        })
-        return () => {
-            PubSub.unsubscribe(BigImgIndex)
-        }
-    }, [])
-    // console.log(imgList,index,'Zoom')
+
+
     return (
         imgList.length > 0 &&
         < div className={style['spec-preview']} >
-            <img src={imgList[index].imgUrl} alt="找不到图片"/>
+            <img src={imgList[BigImgIndex].imgUrl} alt="找不到图片"/>
             <div className={style.event} onMouseMove={handler}></div>
             <div className={style.big}  >
-                <img src={imgList[index].imgUrl} ref={bigRef} />
+                <img src={imgList[BigImgIndex].imgUrl} ref={bigRef} />
             </div>
             {/* <!-- 遮罩层 --> */}
             <div className={style.mask} ref={maskRef}></div>
@@ -50,4 +43,8 @@ const Zoom = ({ imgList }) => {
     );
 }
 
-export default Zoom;
+export default connect(
+    ({sendBigImgIndex})=>({
+        BigImgIndex:sendBigImgIndex.imgIndex
+    })
+)(Zoom);

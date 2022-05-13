@@ -1,5 +1,5 @@
 
-import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
+import { Navigation, Pagination, Scrollbar, A11y,Autoplay } from 'swiper';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
@@ -11,8 +11,9 @@ const Carousel = ({imgList}) => {
   return (
     imgList&&
     <Swiper
-      modules={[Navigation, Pagination, Scrollbar, A11y]}
+      modules={[Navigation, Pagination, Scrollbar, A11y,Autoplay]}
     //   spaceBetween={50}
+      autoplay
       slidesPerView={1}
       navigation
       pagination={{ clickable: true }}

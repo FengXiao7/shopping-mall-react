@@ -3,10 +3,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import style from './index.module.css'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { reqUserInfo, reqLogout } from '@/api'
-import PubSub from 'pubsub-js';
 import { getToken, clearToken } from '@/utils/token'
+import { connect } from 'react-redux';
 
-const Header = () => {
+const Header = (props) => {
     //装搜索栏内容
     const myRef = useRef()
     //装用户名
@@ -61,14 +61,9 @@ const Header = () => {
     }
     //清除搜索栏
     useEffect(() => {
-        getUserName()
-        let clearKeyword = PubSub.subscribe('clearKeyword', (msg, obj) => {
-            myRef.current.value = ''
-        })
-        return () => {
-            PubSub.subscribe(clearKeyword)
-        };
-    }, []);
+        // getUserName()
+        myRef.current.value = ''
+    }, [props.isClearKeyword]);
     useEffect(() => {
         getUserName()
     }, [getToken()])
@@ -136,5 +131,9 @@ const Header = () => {
         </div>
     );
 }
-
-export default Header;
+const mapStateToProps = ({ clearKeyword }) => {
+    return{
+        isClearKeyword: clearKeyword
+    }
+}
+export default connect(mapStateToProps)(Header);

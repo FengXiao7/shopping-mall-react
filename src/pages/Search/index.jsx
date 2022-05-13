@@ -6,9 +6,12 @@ import classnames from 'classnames'
 import TypeNav from '@com/TypeNav';
 import SearchSelector from './SearchSelector'
 import Pagination from '@com/Pagination'
-import PubSub from 'pubsub-js';
 import LazyLoad from 'react-lazyload';
-const Search = () => {
+import { connect } from 'react-redux'
+import { clearKeywordAction } from '@redux/action/clearKeywordAction';
+
+const Search = (props) => {
+
     //编程式路由导航，用于更新地址栏，自己跳自己
     const navigate = useNavigate()
     //获取params参数
@@ -54,7 +57,7 @@ const Search = () => {
             case 'keyword':
                 return () => {
                     //把参数改一下再跳转，这样就可以发请求了。顺便清除一下header组件搜索框里的关键字
-                    PubSub.publish('clearKeyword', null)
+                    props.ChangeIsClearKeyword()
                     if (NewSearchParams.current.categoryName) {
                         let url = `/search?categoryname=${NewSearchParams.current.categoryName}&`
                         if (NewSearchParams.current.category1Id) {
@@ -268,18 +271,18 @@ const Search = () => {
                                                         <li className={style['yui3-u-1-5']} key={goods.id}>
                                                             <div className={style['list-wrap']}>
 
-                                                                    <LazyLoad placeholder={<img width="100%" height="100%" src={"images/加载.gif"} alt="logo" />}>
-                                                                        <Link to={`/detail/${goods.id}`}>
-                                                                            <div className={style.card}>
-                                                                                <div className={style['card-cover']}
-                                                                                    style={{backgroundImage: `url(${goods.defaultImg})`}}
-                                                                                >
+                                                                <LazyLoad placeholder={<img width="100%" height="100%" src={"images/加载.gif"} alt="logo" />}>
+                                                                    <Link to={`/detail/${goods.id}`}>
+                                                                        <div className={style.card}>
+                                                                            <div className={style['card-cover']}
+                                                                                style={{ backgroundImage: `url(${goods.defaultImg})` }}
+                                                                            >
 
-                                                                                </div>
                                                                             </div>
-                                                                        </Link>
-                                                                    </LazyLoad>
-                                                                
+                                                                        </div>
+                                                                    </Link>
+                                                                </LazyLoad>
+
                                                                 <div className={style.price}>
                                                                     <strong>
                                                                         <em>¥</em>
@@ -324,4 +327,10 @@ const Search = () => {
     );
 }
 
-export default Search;
+
+export default connect(
+    ({ clearKeyword })=>({
+        isClearKeyword:clearKeyword
+    }),
+    {ChangeIsClearKeyword:clearKeywordAction}
+)(Search);

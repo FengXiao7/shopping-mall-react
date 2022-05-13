@@ -1,225 +1,142 @@
-import React, { useEffect, useState } from 'react';
+import classnames from 'classnames'
+import React, {useEffect, useState } from 'react';
+import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import style from './index.module.css'
-import { reqGetCartList, reqAddOrUpdateShopCart, reqDeleteCart, reqUpdateChartChecked } from '@/api'
-import throttle from "lodash/throttle";
-import { useNavigate } from 'react-router-dom';
-import { message } from 'antd'
-const ShopCart = () => {
-    const [CartList, SetCartList] = useState([])
-
-    const navigate = useNavigate()
-    //获取购物车列表
-    const getCartList = async () => {
-        let result = await reqGetCartList()
-
-        if (result.code === 200 ) {
-            // 删除完购物车后，把CartList重新置空
-            if(result.data.length===0){
-                SetCartList([])
-            }else{
-                SetCartList(result.data[0].cartInfoList)
-            }
-        }
-    }
-
-    //购物车商品总价
-    const totalPrice = () => {
-        let total = 0;
-        // CartList.reduce((total,cartInfo)=>{total+cartInfo.skuNum * cartInfo.skuPrice},0)
-        CartList.forEach(cartInfo => {
-            total += cartInfo.skuNum * cartInfo.skuPrice
-        })
-        return total
-    }
-    //全选按钮是否勾选
-    const isAllChecked = () => {
-        if (CartList.length === 0) {
-            return false;
-        }
-        return CartList.every(cartInfo => cartInfo.isChecked == 1)
-    }
-    //改变产品数量
-    //type有三种，对应+,-和直接输入; cartInfo商品信息，disNum相对改变数目
-    const hander = throttle(async function (type, cartInfo, disNum) {
-        console.log(disNum)
-        //该标志位为false时，不必发送请求
-        let flag = true;
-        // console.log(cartInfo.skuNum)
-        switch (type) {
-            //直接加最简单
-            case "plus":
-                break;
-            case "minus":
-                if (cartInfo.skuNum <= 1) {
-
-                    flag = false;
-                }
-                break;
-            case "change":
-                if (isNaN(disNum) || disNum <= 0) {
-                    //负数和非数字不发请求
-                    message.warning('请输入正确格式！')
-                    flag = false;
-                } else if (disNum > 100) {
-                    message.warning('最大支持100部商品')
-                    flag = false
-                } else {
-                    //要考虑小数
-                    disNum = parseInt(disNum) - cartInfo.skuNum;
-                }
-                break;
-        }
-        try {
-            if (flag) {
-                //修改成功后，要再次获取购物车数据
-                // console.log(cartInfo.skuid, disNum)
-                let result = await reqAddOrUpdateShopCart(cartInfo.skuId, disNum)
-
-                if (result.code !== 200) {
-                    return Promise.reject(new Error('faile'))
-                }
-
-                getCartList()
-            }
-        } catch (error) {
-            alert(error.message);
-        }
-    }, 500)
-
-    //删除购物车商品
-    const deleteCart = async (skuId) => {
-
-        try {
-            let result = await reqDeleteCart(skuId)
-            if(result.code==200){
-                getCartList()
-            }
-        } catch (error) {
-            alert(error.message)
-        }
-
-    }
-    //删除所选商品
-    const deleteAllselected = async () => {
-        for (let cartInfo of CartList) {
-            if (cartInfo.isChecked) {
-                try {
-                    await reqDeleteCart(cartInfo.skuId)
-                } catch (error) {
-                    alert(error.message)
-                }
-            }
-        }
-        getCartList()
-    }
-    //改变商品勾选情况
-    const updateChecked = async (skuId, event) => {
-        let checked = event.target.checked ? "1" : "0"
-        let result = await reqUpdateChartChecked(skuId, checked)
-        if (result.code == 200) {
-            getCartList()
-            return 'ok'
-        } else {
-            return Promise.reject(new Error('faile'))
-        }
-    }
-    //全选
-    const updateAllCartIsChecked = async (enevt) => {
-        let flag = enevt.target.checked ? "1" : "0"
-        for (let cartInfo of CartList) {
-            if (cartInfo.isChecked !== +flag) {
-                try {
-                    await reqUpdateChartChecked(cartInfo.skuId, flag)
-                } catch (error) {
-                    alert(error.message)
-                }
-            }
-        }
-        getCartList()
-
-    }
-    
+import { reqCategoryList } from '@/api'
+import {connect} from 'react-redux'
+import { getCategoryListAction } from '@redux/action/getCategoryListAction';
+import 'animate.css'
+const TypeNav = () => {
+    //三级联动数据
+    const [CategoryList, SetCategoryList] = useState([])
+    // 控制三级联动一上来是否展示
+    const [isShow, SetIsShow] = useState(false)
+    const navigate = useNavigate();
+    const location = useLocation();
+    const params = useParams()
+    //home组件展示三级联动
+    //发请求
     useEffect(() => {
-        getCartList()
+        // console.log("hhh")
+        // 只有home组件一上来才展示三级联动
+        if (location.pathname === '/home') {
+            SetIsShow(true)
+        }
+
+        const doAsync = async () => {
+            let result = await reqCategoryList()
+            if (result.code === 200) {
+                console.log('三级联动')
+                SetCategoryList(result.data)
+            }
+        }
+        doAsync().catch((error) => console.log(error.msg))
     }, [])
+    // 下面两个函数控制鼠标移除和移入是否展示三级联动
+    const mouseLeave = () => {
+        if (location.pathname !== '/home') {
+            SetIsShow(false)
+        }
+    }
+    const mouseEnter = () => {
+        if (location.pathname !== '/home') {
+            SetIsShow(true)
+        }
+    }
+    //整理并发送参数至search组件
+    const goSearch = (event) => {
+        event.preventDefault()
+        let element = event.target
+        let url = `/search`
+        // 获取自定义属性
+        let { categoryname, categoryid_1, categoryid_2, categoryid_3 } = element.dataset;
+        //看下有没有keyword
+        if(JSON.stringify(params) !== '{}' && typeof params.keyword!=='undefined'){
+            url+=`/${params.keyword}`
+        }
+        //点击空白区域不会发请求
+        if (categoryname) {
+            if (categoryid_1) {
+                url += `?categoryname=${categoryname}&category1Id=${categoryid_1}`
+            } else if (categoryid_2) {
+                url += `?categoryname=${categoryname}&category2Id=${categoryid_2}`
+            } else {
+                url += `?categoryname=${categoryname}&category3Id=${categoryid_3}`
+            }
+            // console.log(url,'TypeNav')
+            navigate(url)
+        }
+    }
+
     return (
-        // < !--购物车列表 -- >
-        <div className={style.cart}>
-            <h4>全部商品</h4>
-            <div className={style['cart-main']}>
-                <div className={style['cart-th']}>
-                    <div className={style['cart-th1']}>全部</div>
-                    <div className={style['cart-th2']}>商品</div>
-                    <div className={style['cart-th3']}>单价（元）</div>
-                    <div className={style['cart-th4']}>数量</div>
-                    <div className={style['cart-th5']}>小计（元）</div>
-                    <div className={style['cart-th6']}>操作</div>
-                </div>
-                <div className={style['cart-body']}>
-
+        CategoryList &&
+        <div className={style['type-nav']}>
+            <div className={style.container}>
+                <div onMouseEnter={mouseEnter} onMouseLeave={mouseLeave}>
+                    <h2 className={style.all}>全部商品分类</h2>
                     {
-                        CartList.length <= 0 ? <h1 style={{ textAlign: 'center', color: '#eb0d36' }}>您的购物车为空，快去买买买吧！</h1> :
-                            CartList.map(cartInfo => {
-                                return (
-                                    <ul className={style['cart-list']} key={cartInfo.skuId}>
-                                        <li className={style['cart-list-con1']}>
-                                            <input type="checkbox" name="chk_list" defaultChecked={cartInfo.isChecked === 1}
-                                                onClick={event => updateChecked(cartInfo.skuId, event)}
-                                            />
-                                        </li>
-                                        <li className={style['cart-list-con2']}>
-                                            <img src={cartInfo.imgUrl} />
-                                            <div className={style['item-msg']}>{cartInfo.skuName}</div>
-                                        </li>
-                                        <li className={style['cart-list-con4']}>
-                                            <span className={style.price}>{cartInfo.skuPrice}</span>
-                                        </li>
-                                        <li className={style['cart-list-con5']}>
-                                            <a href="#" className={style.mins} onClick={() => hander('minus', cartInfo, -1)}>-</a>
-                                            <input autoComplete="off" type="text" minnum="1" className={style.itxt} value={cartInfo.skuNum}
-                                                onChange={event => hander('change', cartInfo, event.target.value)}
-                                            // onBlur={event=>hander('change', cartInfo, event.target.value)}
-                                            />
-                                            <a href="#" className={style.plus} onClick={() => hander('plus', cartInfo, 1)}>+</a>
-                                        </li>
-                                        <li className={style['cart-list-con6']}>
-                                            <span className={style.sum}>{cartInfo.skuNum * cartInfo.skuPrice}</span>
-                                        </li>
-                                        <li className={style['cart-list-con7']}>
-                                            <a href="#none" className={style.sindelet} onClick={() => deleteCart(cartInfo.skuId)}>删除</a>
-                                        </li>
-                                    </ul>
-                                )
-
-                            })
+                        isShow &&
+                        <div className={style.sort}>
+                            <div className={style['all-sort-list2']} onClick={goSearch}>
+                                {
+                                    CategoryList.slice(0, CategoryList.length - 2).map(Category_1 => {
+                                        return (
+                                            <div key={Category_1.categoryId} className={style.item}>
+                                                <h3>
+                                                    <a href="" data-categoryid_1={Category_1.categoryId} data-categoryname={Category_1.categoryName}>{Category_1.categoryName}</a>
+                                                </h3>
+                                                <div className={classnames(style['item-list'], style.clearfix)}>
+                                                    <div className={style.subitem}>
+                                                        {
+                                                            Category_1.categoryChild.map(Category_2 => {
+                                                                return (
+                                                                    <dl key={Category_2.categoryId} className={style.fore}>
+                                                                        <dt>
+                                                                            <a href="" data-categoryid_2={Category_2.categoryId} data-categoryname={Category_2.categoryName}>{Category_2.categoryName}</a>
+                                                                        </dt>
+                                                                        <dd>
+                                                                            {
+                                                                                Category_2.categoryChild.map((Category_3) => {
+                                                                                    return (
+                                                                                        <em key={Category_3.categoryId}>
+                                                                                            <a href="" data-categoryid_3={Category_3.categoryId} data-categoryname={Category_3.categoryName}>{Category_3.categoryName}</a>
+                                                                                        </em>
+                                                                                    )
+                                                                                })
+                                                                            }
+                                                                        </dd>
+                                                                    </dl>
+                                                                )
+                                                            })
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </div>
+                        </div>
                     }
-
                 </div>
-            </div>
-            <div className={style['cart-tool']}>
-                <div className={style['select-all']}>
-                    <input className={style.chooseAll} type="checkbox" onClick={updateAllCartIsChecked} defaultChecked={isAllChecked()} />
-                    <span>全选</span>
-                </div>
-                <div className={style.option}>
-                    <a href="#none" onClick={deleteAllselected}>删除选中的商品</a>
-                    <a href="#none">移到我的关注</a>
-                    <a href="#none">清除下柜商品</a>
-                </div>
-                <div className={style['money-box']}>
-                    <div className={style.chosed}>已选择
-                        <span>0</span>件商品</div>
-                    <div className={style.sumprice}>
-                        <em>总价（不含运费） ：</em>
-                        <i className={style.summoney}>{totalPrice()}</i>
-                    </div>
-                    <div className={style.sumbtn}>
-                        <a className={style['sum-btn']} onClick={() => navigate('/trade')}>结算</a>
-                    </div>
-                </div>
+                <nav className={style.nav}>
+                    <a href="###">服装城</a>
+                    <a href="###">美妆馆</a>
+                    <a href="###">尚品汇超市</a>
+                    <a href="###">全球购</a>
+                    <a href="###">闪购</a>
+                    <a href="###">团购</a>
+                    <a href="###">有趣</a>
+                    <a href="###">秒杀</a>
+                </nav>
             </div>
         </div>
     );
 }
 
-export default ShopCart;
+export default connect(
+    ({CategoryListState})=>({
+        CategoryListTemp:CategoryListState
+    }),
+    {getCategoryList:getCategoryListAction}
+)(TypeNav);

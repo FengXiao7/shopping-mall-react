@@ -747,7 +747,95 @@ function RouterGuard({path,children}){
     }
 ```
 
+## 5.redux
+
+我想再用redux重构一下整个项目的状态管理，使用redux-thunk处理异步action。
+
+已经建好了一个git分支redux，会把一些需要共享的状态，和一些重复发送的请求用redux管理
+
+### 1.pubsub
+
+有两个地方兄弟通信，用的pubsub。改一下用redux管理，这部分就不用redux-thunk了。比较简单
+
+分别是：
+
+- Seacrh组件keyword面包屑点击取消后，搜索栏清空 
+- detail组件里面的小图列表组件和大图组件通信，点击小图传递对应小图索引给大图。
+
+### 2.异步请求
+
+三级联动请求：reqCategoryList
+
+有重复发送的现象，实际上只发一次存储在state里就行了。
+
+我们可以用react-thunk中间件解决发送axios请求获取数据的问题
+
+对应的action，我们可以返回一个函数喔，会自动执行的
+
+```js
+import { get_Category_List } from '@redux/constant'
+import { reqCategoryList } from '@/api'
+export function getCategoryListAction() {
+    return async (dispatch) => {
+        try {
+            let result = await reqCategoryList()
+            if (result.code === 200) {
+                //console.log('三级联动1')
+                dispatch({ type: get_Category_List, payLoad: result.data })
+            } else {
+                alert('请求失败！')
+            }
+        } catch (error) {
+            alert(error)
+        }
+    }
+}
+```
+
+对应的reducer。
 
 
 
+```js
+import {get_Category_List} from '@redux/constant'
+export function getCategoryListReducer(preState=[],action){
+    let {type,payLoad}=action
+    switch(type){
+        // 直接用请求回来的值替换掉state
+        case get_Category_List:
+            return payLoad
+        default:
+            return preState
+    }
+}
+```
 
+实际使用的时候，我们只需要先判断一下仓库数据是否为空，只有为空的时候才发送action。这样就做到只用发一次请求
+
+了。
+
+### 3.持久化
+
+我感觉还可以再优化一下，比如用户已经获取到三级联动数据了。刷新一下，对于这种基本上不会改变的数据，可以
+
+持久化一下，让它再用户刷新后依然保留仓库数据。
+
+然后一定要**注意自定义持久化**！不然所有仓库数据都会保存下来。
+
+按照官方的例子配就行。
+
+传送门：[rt2zz/redux-persist: persist and rehydrate a redux store (github.com)](https://github.com/rt2zz/redux-persist)
+
+我有一个地方配错了，就是白名单那里
+
+```js
+//持久化配置
+const persistConfig = {
+    key: 'CategoryList',
+    storage,
+    //白名单，只持久化三级联动,注意这里是combineReducers里面的键喔
+    whitelist:['CategoryListState']
+}
+```
+
+## 

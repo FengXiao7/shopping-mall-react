@@ -2,11 +2,11 @@ import classnames from 'classnames'
 import React, {useEffect, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import style from './index.module.css'
-import { reqCategoryList } from '@/api'
+import {connect} from 'react-redux'
+import { getCategoryListAction } from '@redux/action/getCategoryListAction';
 import 'animate.css'
-const TypeNav = () => {
-    //三级联动数据
-    const [CategoryList, SetCategoryList] = useState([])
+// 从仓库里取三级联动数据，获取三级联动数据
+const TypeNav = ({CategoryList,getCategoryList}) => {
     // 控制三级联动一上来是否展示
     const [isShow, SetIsShow] = useState(false)
     const navigate = useNavigate();
@@ -20,14 +20,10 @@ const TypeNav = () => {
         if (location.pathname === '/home') {
             SetIsShow(true)
         }
-
-        const doAsync = async () => {
-            let result = await reqCategoryList()
-            if (result.code === 200) {
-                SetCategoryList(result.data)
-            }
+        // 只有当仓库里数据为初始状态才发送请求喔
+        if(CategoryList.length===0){
+            getCategoryList()
         }
-        doAsync().catch((error) => console.log(error.msg))
     }, [])
     // 下面两个函数控制鼠标移除和移入是否展示三级联动
     const mouseLeave = () => {
@@ -131,4 +127,9 @@ const TypeNav = () => {
     );
 }
 
-export default TypeNav;
+export default connect(
+    ({CategoryListState})=>({
+        CategoryList:CategoryListState
+    }),
+    {getCategoryList:getCategoryListAction}
+)(TypeNav);

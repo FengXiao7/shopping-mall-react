@@ -4,8 +4,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import {useNavigate} from 'react-router-dom'
 import style from './index.module.css'
 import { reqOrderInfo, reqAddressList, reqSubmitOrder } from '@/api'
-import {getToken} from '../../utils/token'
-import {message} from 'antd'
+
 
 const Trade = () => {
     const navigate= useNavigate()
