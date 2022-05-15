@@ -1,28 +1,42 @@
 import classnames from 'classnames'
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { message } from 'antd'
 import style from './index.module.css'
 import Carousel from '@com/Carousel'
 import { reqGetBannerList } from '@/api'
+import { useRequest } from 'ahooks'
 
 const ListContainer = () => {
     const [BannerList, SetBannerList] = useState([])
 
-    useEffect(() => {
-        const doAsync = async () => {
-            let result = await reqGetBannerList()
-            if (result.code === 200) {
-                SetBannerList(result.data)
-            }
+
+    // useEffect(() => {
+    //     const doAsync = async () => {
+    //         let result = await reqGetBannerList()
+    //         if (result.code === 200) {
+    //             console.log('请求Banner')
+    //             SetBannerList(result.data)
+    //         }
+    //     }
+    //     doAsync().catch((error) => console.log(error.msg))
+    // }, [])
+    useRequest(reqGetBannerList, {
+        onSuccess: (result) => {
+            console.log('请求成了！')
+            SetBannerList(result.data)
+        },
+        onError: (error) => {
+            message.error(error.message)
         }
-        doAsync().catch((error) => console.log(error.msg))
-    }, [])
+    })
+
     return (
-        BannerList.length>0&&
+        BannerList?.length > 0 &&
         <div className={style['list-container']}>
             <div className={classnames(style.sortList, style.clearfix)}>
                 <div className={style.center}>
                     {/* banner轮播 */}
-                    <Carousel imgList={BannerList}/>
+                    <Carousel imgList={BannerList} />
                 </div>
                 <div className={style.right}>
                     <div className={style.news}>

@@ -2,16 +2,21 @@ import classnames from 'classnames'
 import React, {useEffect, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import style from './index.module.css'
-import {connect} from 'react-redux'
+import {useDispatch,useSelector} from 'react-redux'
 import { getCategoryListAction } from '@redux/action/getCategoryListAction';
 import 'animate.css'
 // 从仓库里取三级联动数据，获取三级联动数据
-const TypeNav = ({CategoryList,getCategoryList}) => {
+// {CategoryList,getCategoryList}
+const TypeNav = () => {
     // 控制三级联动一上来是否展示
     const [isShow, SetIsShow] = useState(false)
     const navigate = useNavigate();
     const location = useLocation();
     const params = useParams()
+    const dispatch = useDispatch()
+    // 拿到仓库数据
+    const CategoryList = useSelector(state=>state.CategoryListState)
+    // console.log(CategoryList)
     //home组件展示三级联动
     //发请求
     useEffect(() => {
@@ -22,7 +27,8 @@ const TypeNav = ({CategoryList,getCategoryList}) => {
         }
         // 只有当仓库里数据为初始状态才发送请求喔
         if(CategoryList.length===0){
-            getCategoryList()
+            // getCategoryList()
+            dispatch(getCategoryListAction())
         }
     }, [])
     // 下面两个函数控制鼠标移除和移入是否展示三级联动
@@ -127,9 +133,10 @@ const TypeNav = ({CategoryList,getCategoryList}) => {
     );
 }
 
-export default connect(
-    ({CategoryListState})=>({
-        CategoryList:CategoryListState
-    }),
-    {getCategoryList:getCategoryListAction}
-)(TypeNav);
+// export default connect(
+//     ({CategoryListState})=>({
+//         CategoryList:CategoryListState
+//     }),
+//     {getCategoryList:getCategoryListAction}
+// )(TypeNav);
+export default TypeNav

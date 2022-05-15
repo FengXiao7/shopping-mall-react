@@ -1,5 +1,7 @@
-import React,{useState,useEffect} from 'react';
+import React,{useState} from 'react';
 import {reqGetFloorList} from '@/api'
+import { useRequest } from 'ahooks';
+import { message } from 'antd';
 import TypeNav from '@com/TypeNav'
 import ListContainer from './ListContainer';
 import Recommend from './Recommend';
@@ -10,15 +12,24 @@ import Floor from './Floor';
 const Home = () => {
     const [FloorList, SetFloorList] = useState([])
     //请求FloorList
-    useEffect(() => {
-        const doAsync = async () => {
-            let result = await reqGetFloorList()
-            if (result.code === 200) {
-                SetFloorList(result.data)
-            }
+    // useEffect(() => {
+    //     const doAsync = async () => {
+    //         let result = await reqGetFloorList()
+    //         if (result.code === 200) {
+    //             SetFloorList(result.data)
+    //         }
+    //     }
+    //     doAsync().catch((error) => console.log(error.msg))
+    // }, [])
+
+    useRequest(reqGetFloorList, {
+        onSuccess: (result) => {
+            SetFloorList(result.data)
+        },
+        onError: (error) => {
+            message.error(error.message)
         }
-        doAsync().catch((error) => console.log(error.msg))
-    }, [])
+    })
     return (
         <div>
             <TypeNav/>

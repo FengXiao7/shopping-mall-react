@@ -10,11 +10,17 @@
 
 
 
+这个项目有一个redux分支，该分支把主分支里的兄弟组件通信，以及重复发送的异步请求
+
+都用redux进行管理。
+
+
+
 
 
 ## 1.useEffect发送请求
 
-组件挂载时会发送请求，怎么做到只发送一次请求，切换路由组件又回来后，不再发送请求？是只能用状态管理工具了吧
+组件挂载时会发送请求，怎么做到只发送一次请求，切换路由组件又回来后，不再发送请求？是只能用状态管理工具了吧。有没有keepalive呀？
 
 ```jsx
 const [CategoryList,SetCategoryList] = useState([])
@@ -48,6 +54,8 @@ ReactRouter6，相比较5，多了很多钩子
 可以实现，有机会会实验一下。
 
 最后的成品没有用到状态管理工具。
+
+PS：分支上用到了
 
 ## 5.组件通信
 
@@ -794,8 +802,6 @@ export function getCategoryListAction() {
 
 对应的reducer。
 
-
-
 ```js
 import {get_Category_List} from '@redux/constant'
 export function getCategoryListReducer(preState=[],action){
@@ -838,4 +844,19 @@ const persistConfig = {
 }
 ```
 
-## 
+## 6.钩子
+
+尝试使用了下useSelector，useDispath这两个新钩子，就不用connect了，减少了模板代码。
+
+用了下ahooks的useRequest，确实好用，封装的很好，所有的异步请求其实都可以用这个。
+
+类似的库还有react-use，基本上能想到的需求，都有现成的钩子可以使用。
+
+## 7.keep-alive
+
+[reactjs - Does React have something like Vue's keep-alive element? - Stack Overflow](https://stackoverflow.com/questions/54085374/does-react-have-something-like-vues-keep-alive-element)
+
+react好像还真没路由缓存，我觉得有些地方的路由缓存还是很有必要的吧。组件里面的状态可以用redux保存起来，也可以用react-persist做持久化。具体场景具体分析吧。
+
+
+
